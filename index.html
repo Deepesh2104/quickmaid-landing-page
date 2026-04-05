@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickMaid — Verified Maid, 30 Minutes Mein</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B00;
+    --saffron-light: #FF8C3A;
+    --saffron-pale: #FFF0E6;
+    --deep: #0A0A0A;
+    --off-white: #F9F6F2;
+    --muted: #6B6560;
+    --border: rgba(0,0,0,0.08);
+    --card-bg: #FFFFFF;
+    --green: #1A7A4A;
+    --green-pale: #E8F5EE;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--off-white);
+    color: var(--deep);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 5%;
+    background: rgba(249,246,242,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 22px; font-weight: 800; color: var(--deep);
+    text-decoration: none;
+  }
+  .logo-icon {
+    width: 36px; height: 36px; background: var(--saffron);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .nav-links { display: flex; align-items: center; gap: 32px; }
+  .nav-links a {
+    font-size: 14px; font-weight: 500; color: var(--muted);
+    text-decoration: none; transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--saffron); }
+  .nav-cta {
+    background: var(--saffron); color: #fff;
+    padding: 10px 24px; border-radius: 50px;
+    font-size: 14px; font-weight: 600;
+    text-decoration: none; transition: all .2s;
+    box-shadow: 0 4px 16px rgba(255,107,0,0.35);
+  }
+  .nav-cta:hover { background: var(--saffron-light); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    padding: 120px 5% 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -100px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(255,107,0,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -150px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(26,122,74,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--saffron-pale); border: 1px solid rgba(255,107,0,0.2);
+    color: var(--saffron); padding: 6px 16px; border-radius: 50px;
+    font-size: 13px; font-weight: 600; margin-bottom: 24px;
+    animation: fadeUp .6s ease both;
+  }
+  .badge-dot {
+    width: 7px; height: 7px; background: var(--saffron);
+    border-radius: 50%; animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .5; transform: scale(1.4); }
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 5vw, 64px);
+    font-weight: 800;
+    line-height: 1.08;
+    margin-bottom: 24px;
+    animation: fadeUp .7s .1s ease both;
+  }
+  .hero h1 .accent { color: var(--saffron); }
+  .hero h1 .devanagari {
+    font-family: 'Noto Sans Devanagari', sans-serif;
+    display: block; font-size: 0.85em; font-weight: 700;
+    color: var(--muted);
+  }
+
+  .hero-desc {
+    font-size: 17px; color: var(--muted); line-height: 1.7;
+    margin-bottom: 36px; max-width: 500px;
+    animation: fadeUp .7s .2s ease both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 14px; flex-wrap: wrap;
+    animation: fadeUp .7s .3s ease both;
+  }
+  .btn-primary {
+    background: var(--saffron); color: #fff;
+    padding: 16px 32px; border-radius: 50px;
+    font-size: 15px; font-weight: 700;
+    text-decoration: none; transition: all .25s;
+    box-shadow: 0 8px 24px rgba(255,107,0,0.4);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(255,107,0,0.5);
+  }
+  .btn-secondary {
+    background: transparent; color: var(--deep);
+    padding: 16px 28px; border-radius: 50px;
+    font-size: 15px; font-weight: 600;
+    text-decoration: none; transition: all .25s;
+    border: 1.5px solid rgba(0,0,0,0.15);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover { border-color: var(--saffron); color: var(--saffron); }
+
+  .hero-stats {
+    display: flex; gap: 32px; margin-top: 40px;
+    animation: fadeUp .7s .4s ease both;
+  }
+  .stat-item {}
+  .stat-num {
+    font-size: 28px; font-weight: 800; color: var(--deep);
+  }
+  .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+  /* Hero Visual */
+  .hero-visual {
+    position: relative;
+    animation: fadeUp .8s .2s ease both;
+  }
+  .phone-mockup {
+    background: var(--deep);
+    border-radius: 36px;
+    padding: 12px;
+    width: 280px;
+    margin: 0 auto;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.25);
+    position: relative;
+    z-index: 2;
+  }
+  .phone-screen {
+    background: var(--off-white);
+    border-radius: 28px;
+    overflow: hidden;
+  }
+  .app-header {
+    background: var(--saffron);
+    padding: 20px 18px 16px;
+    color: #fff;
+  }
+  .app-header-top {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .app-header-title { font-size: 18px; font-weight: 800; }
+  .app-header-sub { font-size: 11px; opacity: .85; }
+  .app-location {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.2);
+    padding: 6px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .app-body { padding: 14px; }
+  .app-book-now {
+    background: var(--deep); color: #fff;
+    border-radius: 16px; padding: 14px;
+    margin-bottom: 12px;
+  }
+  .app-book-label { font-size: 10px; color: rgba(255,255,255,.6); margin-bottom: 4px; }
+  .app-book-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+  .app-book-btn {
+    background: var(--saffron);
+    color: #fff; border: none;
+    padding: 8px 16px; border-radius: 10px;
+    font-size: 11px; font-weight: 700; cursor: pointer;
+  }
+  .app-services {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-bottom: 12px;
+  }
+  .app-service-card {
+    background: #fff; border-radius: 12px; padding: 10px;
+    border: 1px solid var(--border);
+  }
+  .app-service-icon { font-size: 18px; margin-bottom: 4px; }
+  .app-service-name { font-size: 10px; font-weight: 600; color: var(--deep); }
+  .app-service-price { font-size: 9px; color: var(--muted); }
+  .app-maid-card {
+    background: #fff; border-radius: 12px; padding: 10px;
+    border: 1px solid var(--border);
+    display: flex; gap: 10px; align-items: center;
+  }
+  .app-maid-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #FF8C3A, #FF6B00);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: #fff; font-weight: 700; flex-shrink: 0;
+  }
+  .app-maid-name { font-size: 11px; font-weight: 700; color: var(--deep); }
+  .app-maid-sub { font-size: 9px; color: var(--muted); }
+  .app-maid-badge {
+    margin-left: auto;
+    background: var(--green-pale); color: var(--green);
+    font-size: 9px; font-weight: 700; padding: 3px 7px; border-radius: 6px;
+  }
+
+  /* Floating cards around phone */
+  .float-card {
+    position: absolute;
+    background: #fff;
+    border-radius: 16px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    border: 1px solid var(--border);
+    z-index: 3;
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  .float-card-1 {
+    top: 30px; right: -20px;
+    animation-delay: 0s;
+  }
+  .float-card-2 {
+    bottom: 60px; left: -30px;
+    animation-delay: 1.5s;
+  }
+  .float-card-3 {
+    top: 50%; right: -40px;
+    animation-delay: .8s;
+  }
+  .fc-title { font-size: 11px; font-weight: 700; color: var(--deep); margin-bottom: 2px; }
+  .fc-sub { font-size: 10px; color: var(--muted); }
+  .fc-num { font-size: 20px; font-weight: 800; color: var(--saffron); }
+  .fc-green { color: var(--green); }
+
+  /* ── HOW IT WORKS ── */
+  .section {
+    padding: 100px 5%;
+  }
+  .section-header {
+    text-align: center; margin-bottom: 64px;
+  }
+  .section-tag {
+    display: inline-block;
+    background: var(--saffron-pale);
+    color: var(--saffron);
+    font-size: 12px; font-weight: 700;
+    padding: 5px 14px; border-radius: 50px;
+    margin-bottom: 16px; letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .section-title {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800; line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .section-desc {
+    font-size: 16px; color: var(--muted);
+    max-width: 540px; margin: 0 auto;
+  }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    position: relative;
+  }
+  .how-grid::before {
+    content: '';
+    position: absolute; top: 36px; left: 10%; right: 10%;
+    height: 2px;
+    background: repeating-linear-gradient(to right, var(--saffron) 0, var(--saffron) 8px, transparent 8px, transparent 16px);
+    z-index: 0;
+  }
+  .how-step {
+    text-align: center;
+    position: relative; z-index: 1;
+  }
+  .how-icon {
+    width: 72px; height: 72px;
+    background: var(--card-bg);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; margin: 0 auto 20px;
+    position: relative;
+    transition: all .3s;
+  }
+  .how-step:hover .how-icon {
+    border-color: var(--saffron);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(255,107,0,0.2);
+  }
+  .how-step-num {
+    position: absolute; top: -8px; right: -8px;
+    width: 22px; height: 22px;
+    background: var(--saffron); color: #fff;
+    border-radius: 50%; font-size: 11px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .how-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+  .how-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ── SERVICES ── */
+  .services-bg { background: var(--deep); }
+  .services-bg .section-title { color: #fff; }
+  .services-bg .section-desc { color: rgba(255,255,255,.5); }
+  .services-bg .section-tag { background: rgba(255,107,0,.2); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .service-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 28px;
+    transition: all .3s;
+    position: relative; overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--saffron);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform .3s;
+  }
+  .service-card:hover { background: rgba(255,255,255,0.08); transform: translateY(-4px); }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-card.featured {
+    background: var(--saffron);
+    border-color: var(--saffron);
+  }
+  .service-card.featured::before { display: none; }
+  .service-emoji { font-size: 36px; margin-bottom: 16px; }
+  .service-name { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .service-card.featured .service-name { color: #fff; }
+  .service-desc { font-size: 13px; color: rgba(255,255,255,.55); line-height: 1.6; margin-bottom: 16px; }
+  .service-card.featured .service-desc { color: rgba(255,255,255,.8); }
+  .service-price { font-size: 22px; font-weight: 800; color: #fff; }
+  .service-price span { font-size: 13px; font-weight: 400; opacity: .7; }
+  .service-badge {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(255,255,255,.2); color: #fff;
+    font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 50px;
+  }
+  .service-card.featured .service-badge { background: rgba(0,0,0,.2); }
+
+  /* ── PLANS ── */
+  .plans-section { background: var(--off-white); }
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 900px; margin: 0 auto;
+  }
+  .plan-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 32px 28px;
+    position: relative; transition: all .3s;
+  }
+  .plan-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.1); }
+  .plan-card.popular {
+    border-color: var(--saffron);
+    box-shadow: 0 8px 32px rgba(255,107,0,0.2);
+  }
+  .popular-badge {
+    position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+    background: var(--saffron); color: #fff;
+    font-size: 11px; font-weight: 700; padding: 4px 16px; border-radius: 50px;
+    white-space: nowrap;
+  }
+  .plan-name { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+  .plan-price { font-size: 38px; font-weight: 800; color: var(--deep); line-height: 1; }
+  .plan-price sup { font-size: 20px; vertical-align: top; margin-top: 6px; margin-right: 2px; }
+  .plan-price sub { font-size: 14px; color: var(--muted); font-weight: 400; }
+  .plan-desc { font-size: 13px; color: var(--muted); margin: 12px 0 24px; }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .plan-features li {
+    font-size: 13px; color: var(--deep);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .plan-check {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--green-pale); color: var(--green);
+    font-size: 10px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .plan-btn {
+    display: block; text-align: center;
+    padding: 13px; border-radius: 14px;
+    font-size: 14px; font-weight: 700;
+    text-decoration: none; transition: all .25s;
+    border: 1.5px solid var(--border);
+    color: var(--deep);
+  }
+  .plan-btn:hover { border-color: var(--saffron); color: var(--saffron); }
+  .plan-btn.primary-btn {
+    background: var(--saffron); color: #fff; border-color: transparent;
+    box-shadow: 0 6px 20px rgba(255,107,0,0.35);
+  }
+  .plan-btn.primary-btn:hover { background: var(--saffron-light); transform: translateY(-1px); }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .testimonial-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 28px;
+    transition: all .3s;
+  }
+  .testimonial-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  .testimonial-stars { color: var(--saffron); font-size: 14px; margin-bottom: 14px; letter-spacing: 2px; }
+  .testimonial-text {
+    font-size: 14px; color: var(--deep); line-height: 1.7;
+    margin-bottom: 20px; font-style: italic;
+  }
+  .testimonial-author { display: flex; align-items: center; gap: 12px; }
+  .author-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--saffron-pale);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: var(--saffron);
+  }
+  .author-name { font-size: 14px; font-weight: 700; }
+  .author-city { font-size: 12px; color: var(--muted); }
+
+  /* ── TRUST ── */
+  .trust-section { background: var(--saffron); }
+  .trust-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+  .trust-item { text-align: center; }
+  .trust-icon { font-size: 40px; margin-bottom: 12px; }
+  .trust-num { font-size: 36px; font-weight: 800; color: #fff; }
+  .trust-label { font-size: 13px; color: rgba(255,255,255,.8); margin-top: 4px; }
+
+  /* ── MAID CTA ── */
+  .maid-cta {
+    background: var(--deep);
+    padding: 80px 5%;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; align-items: center;
+  }
+  .maid-cta-text {}
+  .maid-cta-badge {
+    display: inline-block;
+    background: rgba(255,107,0,.2); color: var(--saffron-light);
+    font-size: 12px; font-weight: 700; padding: 5px 14px;
+    border-radius: 50px; margin-bottom: 20px;
+  }
+  .maid-cta h2 { font-size: clamp(28px, 3.5vw, 44px); font-weight: 800; color: #fff; line-height: 1.15; margin-bottom: 16px; }
+  .maid-cta p { font-size: 15px; color: rgba(255,255,255,.6); line-height: 1.7; margin-bottom: 28px; }
+  .maid-benefits { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .maid-benefit {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px; color: rgba(255,255,255,.85);
+  }
+  .benefit-icon {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: rgba(255,107,0,.2); color: var(--saffron-light);
+    display: flex; align-items: center; justify-content: center; font-size: 15px;
+    flex-shrink: 0;
+  }
+  .maid-earnings {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 20px; padding: 28px;
+  }
+  .earnings-title { font-size: 13px; color: rgba(255,255,255,.5); margin-bottom: 8px; font-weight: 500; }
+  .earnings-num { font-size: 42px; font-weight: 800; color: var(--saffron-light); line-height: 1; }
+  .earnings-sub { font-size: 13px; color: rgba(255,255,255,.5); margin-top: 4px; margin-bottom: 24px; }
+  .earnings-bar-wrap { margin-bottom: 8px; }
+  .earnings-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,.5); margin-bottom: 6px; }
+  .earnings-bar-bg { background: rgba(255,255,255,.1); border-radius: 4px; height: 8px; }
+  .earnings-bar-fill { height: 100%; border-radius: 4px; background: var(--saffron); }
+
+  /* ── FAQ ── */
+  .faq-list { max-width: 700px; margin: 0 auto; }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+  }
+  .faq-q {
+    width: 100%; background: none; border: none;
+    text-align: left; padding: 20px 0;
+    font-size: 15px; font-weight: 600; color: var(--deep);
+    cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Sora', sans-serif;
+  }
+  .faq-q:hover { color: var(--saffron); }
+  .faq-icon { font-size: 20px; transition: transform .3s; flex-shrink: 0; margin-left: 16px; }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+  .faq-a {
+    max-height: 0; overflow: hidden;
+    font-size: 14px; color: var(--muted); line-height: 1.7;
+    transition: max-height .4s ease, padding .3s;
+  }
+  .faq-item.open .faq-a { max-height: 200px; padding-bottom: 20px; }
+
+  /* ── FOOTER CTA ── */
+  .footer-cta {
+    background: var(--saffron);
+    text-align: center; padding: 80px 5%;
+    position: relative; overflow: hidden;
+  }
+  .footer-cta::before {
+    content: '';
+    position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .footer-cta h2 {
+    font-size: clamp(28px, 4vw, 52px); font-weight: 800;
+    color: #fff; margin-bottom: 16px; position: relative;
+  }
+  .footer-cta p {
+    font-size: 16px; color: rgba(255,255,255,.8);
+    margin-bottom: 36px; position: relative;
+  }
+  .footer-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; position: relative; }
+  .btn-white {
+    background: #fff; color: var(--saffron);
+    padding: 16px 36px; border-radius: 50px;
+    font-size: 15px; font-weight: 700; text-decoration: none;
+    transition: all .25s; box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-white:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.2); }
+  .btn-ghost-white {
+    background: rgba(255,255,255,0.15); color: #fff;
+    padding: 16px 28px; border-radius: 50px;
+    font-size: 15px; font-weight: 600; text-decoration: none;
+    transition: all .25s; border: 1.5px solid rgba(255,255,255,0.4);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-ghost-white:hover { background: rgba(255,255,255,0.25); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--deep); padding: 60px 5% 32px;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px; margin-bottom: 48px;
+  }
+  .footer-brand {}
+  .footer-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 20px; font-weight: 800; color: #fff;
+    text-decoration: none; margin-bottom: 16px;
+  }
+  .footer-logo-icon {
+    width: 32px; height: 32px; background: var(--saffron);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .footer-tagline { font-size: 13px; color: rgba(255,255,255,.4); line-height: 1.7; margin-bottom: 20px; }
+  .footer-social { display: flex; gap: 10px; }
+  .social-btn {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(255,255,255,.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; text-decoration: none; transition: all .2s;
+  }
+  .social-btn:hover { background: var(--saffron); }
+  .footer-col h4 { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 16px; text-transform: uppercase; letter-spacing: .06em; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul li a {
+    font-size: 13px; color: rgba(255,255,255,.4);
+    text-decoration: none; transition: color .2s;
+  }
+  .footer-col ul li a:hover { color: var(--saffron); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,.08);
+    padding-top: 28px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-copy { font-size: 12px; color: rgba(255,255,255,.3); }
+  .footer-cities {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .city-tag {
+    font-size: 11px; color: rgba(255,255,255,.3);
+    border: 1px solid rgba(255,255,255,.1);
+    padding: 3px 10px; border-radius: 50px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── WHATSAPP FLOAT ── */
+  .whatsapp-float {
+    position: fixed; bottom: 28px; right: 28px; z-index: 200;
+    background: #25D366; color: #fff;
+    width: 56px; height: 56px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; text-decoration: none;
+    box-shadow: 0 8px 24px rgba(37,211,102,0.45);
+    animation: float 3s ease-in-out infinite;
+    transition: transform .2s;
+  }
+  .whatsapp-float:hover { transform: scale(1.1); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; text-align: center; padding-top: 100px; }
+    .hero-desc, .hero-stats { margin-left: auto; margin-right: auto; }
+    .hero-actions { justify-content: center; }
+    .hero-stats { justify-content: center; }
+    .hero-visual { display: none; }
+    .how-grid { grid-template-columns: 1fr 1fr; }
+    .how-grid::before { display: none; }
+    .services-grid { grid-template-columns: 1fr 1fr; }
+    .plans-grid { grid-template-columns: 1fr; max-width: 400px; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .trust-grid { grid-template-columns: 1fr 1fr; }
+    .maid-cta { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 600px) {
+    .services-grid { grid-template-columns: 1fr; }
+    .how-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">🏠</div>
+    QuickMaid
+  </a>
+  <div class="nav-links">
+    <a href="#services">Services</a>
+    <a href="#plans">Plans</a>
+    <a href="#how">How It Works</a>
+    <a href="#maid-join">Maid Bano</a>
+  </div>
+  <a href="https://wa.me/919999999999" class="nav-cta">Book Now →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="badge-dot"></div>
+      Raipur mein Available — Abhi Book Karo
+    </div>
+    <h1>
+      Ghar ki Safai,
+      <span class="accent">30 Minutes</span> Mein
+      <span class="devanagari">भरोसेमंद, वेरिफाइड, तुरंत</span>
+    </h1>
+    <p class="hero-desc">
+      Trained aur Aadhaar-verified maids — instant ya schedule karo. Monthly aur annual plans bhi available. 
+      No agents, no waiting, no drama.
+    </p>
+    <div class="hero-actions">
+      <a href="https://wa.me/919999999999" class="btn-primary">
+        📱 WhatsApp pe Book Karo
+      </a>
+      <a href="#plans" class="btn-secondary">
+        Plans Dekho →
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">500+</div>
+        <div class="stat-label">Happy Families</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4.8★</div>
+        <div class="stat-label">Average Rating</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">₹0</div>
+        <div class="stat-label">Agent Commission</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <!-- Floating cards -->
+    <div class="float-card float-card-1">
+      <div class="fc-title">✅ Verified Maid Assigned</div>
+      <div class="fc-sub">Savita Didi • 4.9★ • 2 min away</div>
+    </div>
+    <div class="float-card float-card-2">
+      <div class="fc-title">💰 Monthly Plan Active</div>
+      <div class="fc-num">₹2,799</div>
+      <div class="fc-sub">26 visits included</div>
+    </div>
+    <div class="float-card float-card-3">
+      <div class="fc-title">Booking Done!</div>
+      <div class="fc-sub fc-green">⏱ 28 min ETA</div>
+    </div>
+
+    <!-- Phone Mockup -->
+    <div class="phone-mockup">
+      <div class="phone-screen">
+        <div class="app-header">
+          <div class="app-header-top">
+            <div>
+              <div class="app-header-title">QuickMaid</div>
+              <div class="app-header-sub">Namaskar! Aaj kya chahiye?</div>
+            </div>
+            <div>🔔</div>
+          </div>
+          <div class="app-location">📍 Tatibandh, Raipur</div>
+        </div>
+        <div class="app-body">
+          <div class="app-book-now">
+            <div class="app-book-label">INSTANT BOOKING</div>
+            <div class="app-book-title">Abhi Didi Bulao</div>
+            <button class="app-book-btn">Book in 30 sec →</button>
+          </div>
+          <div class="app-services">
+            <div class="app-service-card">
+              <div class="app-service-icon">🧹</div>
+              <div class="app-service-name">Cleaning</div>
+              <div class="app-service-price">₹149/hr</div>
+            </div>
+            <div class="app-service-card">
+              <div class="app-service-icon">🍳</div>
+              <div class="app-service-name">Cooking</div>
+              <div class="app-service-price">₹199/hr</div>
+            </div>
+            <div class="app-service-card">
+              <div class="app-service-icon">👔</div>
+              <div class="app-service-name">Laundry</div>
+              <div class="app-service-price">₹99/hr</div>
+            </div>
+            <div class="app-service-card">
+              <div class="app-service-icon">🍽️</div>
+              <div class="app-service-name">Bartan</div>
+              <div class="app-service-price">₹99/hr</div>
+            </div>
+          </div>
+          <div class="app-maid-card">
+            <div class="app-maid-avatar">S</div>
+            <div>
+              <div class="app-maid-name">Savita Devi</div>
+              <div class="app-maid-sub">⭐ 4.9 • 147 bookings</div>
+            </div>
+            <div class="app-maid-badge">Verified</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<section class="trust-section section" style="padding: 60px 5%;">
+  <div class="trust-grid reveal">
+    <div class="trust-item">
+      <div class="trust-icon">👩</div>
+      <div class="trust-num">200+</div>
+      <div class="trust-label">Verified Maids</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">⚡</div>
+      <div class="trust-num">30 min</div>
+      <div class="trust-label">Average Arrival Time</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">🛡️</div>
+      <div class="trust-num">₹5,000</div>
+      <div class="trust-label">Damage Guarantee</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">🔄</div>
+      <div class="trust-num">0</div>
+      <div class="trust-label">No-Show Zero Policy</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-header reveal">
+    <div class="section-tag">Kaise Kaam Karta Hai</div>
+    <h2 class="section-title">4 Steps Mein, Ghar Chamak Jaata Hai</h2>
+    <p class="section-desc">Booking itni aasaan hai jitna WhatsApp message karna</p>
+  </div>
+  <div class="how-grid reveal">
+    <div class="how-step">
+      <div class="how-icon">
+        📱
+        <div class="how-step-num">1</div>
+      </div>
+      <div class="how-title">WhatsApp Karo</div>
+      <div class="how-desc">Hamare number par message karo — service, time, aur address batao</div>
+    </div>
+    <div class="how-step">
+      <div class="how-icon">
+        👩
+        <div class="how-step-num">2</div>
+      </div>
+      <div class="how-title">Maid Match</div>
+      <div class="how-desc">Nearest verified maid automatically assign hoti hai — profile dekh sakte ho</div>
+    </div>
+    <div class="how-step">
+      <div class="how-icon">
+        🔐
+        <div class="how-step-num">3</div>
+      </div>
+      <div class="how-title">OTP se Shuru</div>
+      <div class="how-desc">Didi aane par OTP share karo — safe start. Kaam khatam OTP se end.</div>
+    </div>
+    <div class="how-step">
+      <div class="how-icon">
+        ⭐
+        <div class="how-step-num">4</div>
+      </div>
+      <div class="how-title">Rate Karo</div>
+      <div class="how-desc">UPI se payment, review do. Wahi didi next time bhi milegi — agar chaaho to.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section services-bg" id="services">
+  <div class="section-header reveal">
+    <div class="section-tag">Our Services</div>
+    <h2 class="section-title">Ghar ke Har Kaam ke Liye</h2>
+    <p class="section-desc">Cleaning se cooking tak — sab kuch ek app mein</p>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <div class="service-emoji">🧹</div>
+      <div class="service-name">Home Cleaning</div>
+      <div class="service-desc">Sweep, mop, dusting, bathroom cleaning — poora ghar chamka denge professional maids</div>
+      <div class="service-price">₹149 <span>/ hour</span></div>
+      <div class="service-badge">Most Popular</div>
+    </div>
+    <div class="service-card featured">
+      <div class="service-emoji">🍳</div>
+      <div class="service-name">Cooking Help</div>
+      <div class="service-desc">Daily khana banana, roti, sabzi, dal — trained cook jo ghar jaisa khana banaye</div>
+      <div class="service-price">₹199 <span>/ hour</span></div>
+      <div class="service-badge">Best Value</div>
+    </div>
+    <div class="service-card">
+      <div class="service-emoji">🍽️</div>
+      <div class="service-name">Bartan Saaf Karna</div>
+      <div class="service-desc">Dishes, utensils, pots — kitchen bilkul clean. Office jaate waqt tension nahi</div>
+      <div class="service-price">₹99 <span>/ hour</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-emoji">👔</div>
+      <div class="service-name">Laundry & Ironing</div>
+      <div class="service-desc">Kapde dhoona, nichor ke sukhana, ironing — hamesha fresh look</div>
+      <div class="service-price">₹99 <span>/ session</span></div>
+    </div>
+    <div class="service-card">
+      <div class="service-emoji">👴</div>
+      <div class="service-name">Elderly Care Assist</div>
+      <div class="service-desc">Burzurg parents ke liye trained helper — bathing assist, medication reminder, company</div>
+      <div class="service-price">₹199 <span>/ hour</span></div>
+      <div class="service-badge">New</div>
+    </div>
+    <div class="service-card">
+      <div class="service-emoji">✨</div>
+      <div class="service-name">Deep Cleaning</div>
+      <div class="service-desc">Monthly ya seasonal deep clean — windows, behind furniture, kitchen scrub, bathroom tiles</div>
+      <div class="service-price">₹999 <span>/ session</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANS -->
+<section class="section plans-section" id="plans">
+  <div class="section-header reveal">
+    <div class="section-tag">Pricing Plans</div>
+    <h2 class="section-title">Apne Budget Mein Best Plan Chuno</h2>
+    <p class="section-desc">No hidden charges. No agent commission. Jo price dikhti hai, wahi pay karo.</p>
+  </div>
+  <div class="plans-grid reveal">
+    <div class="plan-card">
+      <div class="plan-name">Instant</div>
+      <div class="plan-price"><sup>₹</sup>149<sub>/hr se</sub></div>
+      <div class="plan-desc">Jab chahiye tab book — koi commitment nahi</div>
+      <ul class="plan-features">
+        <li><div class="plan-check">✓</div> Pay per booking</li>
+        <li><div class="plan-check">✓</div> Verified maid</li>
+        <li><div class="plan-check">✓</div> OTP system</li>
+        <li><div class="plan-check">✓</div> UPI payment</li>
+        <li><div class="plan-check">✓</div> Rating system</li>
+      </ul>
+      <a href="https://wa.me/919999999999" class="plan-btn">Abhi Book Karo</a>
+    </div>
+    <div class="plan-card popular">
+      <div class="popular-badge">⭐ Sabse Popular</div>
+      <div class="plan-name">Monthly</div>
+      <div class="plan-price"><sup>₹</sup>2,799<sub>/month</sub></div>
+      <div class="plan-desc">26 visits/month — Mon to Sat, daily service</div>
+      <ul class="plan-features">
+        <li><div class="plan-check">✓</div> 26 visits included</li>
+        <li><div class="plan-check">✓</div> Same preferred maid</li>
+        <li><div class="plan-check">✓</div> Priority booking</li>
+        <li><div class="plan-check">✓</div> Pause upto 15 days</li>
+        <li><div class="plan-check">✓</div> No-show backup</li>
+        <li><div class="plan-check">✓</div> 12% cheaper than daily</li>
+      </ul>
+      <a href="https://wa.me/919999999999" class="plan-btn primary-btn">Monthly Plan Lo →</a>
+    </div>
+    <div class="plan-card">
+      <div class="plan-name">Annual</div>
+      <div class="plan-price"><sup>₹</sup>28,000<sub>/year</sub></div>
+      <div class="plan-desc">Best value — 18% discount on monthly price</div>
+      <ul class="plan-features">
+        <li><div class="plan-check">✓</div> 312 visits included</li>
+        <li><div class="plan-check">✓</div> Dedicated maid</li>
+        <li><div class="plan-check">✓</div> Priority 24/7 support</li>
+        <li><div class="plan-check">✓</div> Pause upto 30 days</li>
+        <li><div class="plan-check">✓</div> Free deep cleaning (2x)</li>
+        <li><div class="plan-check">✓</div> 18% total savings</li>
+      </ul>
+      <a href="https://wa.me/919999999999" class="plan-btn">Annual Plan Lo</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" style="background: #fff;">
+  <div class="section-header reveal">
+    <div class="section-tag">Customer Reviews</div>
+    <h2 class="section-title">Kya Kehte Hain Humare Customers</h2>
+  </div>
+  <div class="testimonials-grid reveal">
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-text">"Pehle agent se maid dhundhte the — kabhi aati thi, kabhi nahi. QuickMaid se book kiya, 25 minute mein Savita Didi aa gayi. Bilkul verified, bilkul professional. Ab monthly plan le liya."</div>
+      <div class="testimonial-author">
+        <div class="author-avatar">P</div>
+        <div>
+          <div class="author-name">Priya Sharma</div>
+          <div class="author-city">Tatibandh, Raipur</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-text">"Dono log office jaate hain. Roz ghar ki chinta rehti thi. QuickMaid ka monthly plan liya — ab same didi roz aati hai, ghar hamesha saaf rehta hai. Paise bhi bachte hain agent se compare karke."</div>
+      <div class="testimonial-author">
+        <div class="author-avatar">R</div>
+        <div>
+          <div class="author-name">Rahul Gupta</div>
+          <div class="author-city">Civil Lines, Raipur</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars">★★★★★</div>
+      <div class="testimonial-text">"Mere burzurg parents ke liye elderly care plan liya. Didi unka bahut khyal rakhti hai — medication reminder, ghar ki safai, company bhi. Bahut relieved hun main. 100% recommend."</div>
+      <div class="testimonial-author">
+        <div class="author-avatar">A</div>
+        <div>
+          <div class="author-name">Anjali Tiwari</div>
+          <div class="author-city">Shankar Nagar, Raipur</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAID JOIN CTA -->
+<section class="maid-cta" id="maid-join">
+  <div class="maid-cta-text">
+    <div class="maid-cta-badge">For Maids & Helpers</div>
+    <h2>Didi, Aap Bhi Join Karein QuickMaid</h2>
+    <p>Regular kaam, samay par payment, safe environment. Agent ki zaroorat nahi — directly hamare saath kaam karo aur zyada kamao.</p>
+    <div class="maid-benefits">
+      <div class="maid-benefit">
+        <div class="benefit-icon">💰</div>
+        Samay par payment — weekly UPI mein seedha bank mein
+      </div>
+      <div class="maid-benefit">
+        <div class="benefit-icon">📅</div>
+        Apna schedule khud banao — kabhi kaam karo, kabhi chhutti lo
+      </div>
+      <div class="maid-benefit">
+        <div class="benefit-icon">🛡️</div>
+        Safe platform — ID card milega, official pehchaan
+      </div>
+      <div class="maid-benefit">
+        <div class="benefit-icon">⭐</div>
+        Rating badhao, zyada bookings pao, zyada kamao
+      </div>
+    </div>
+    <a href="https://wa.me/919999999999" class="btn-primary">Join Karo — Free Hai →</a>
+  </div>
+  <div class="maid-earnings">
+    <div class="earnings-title">MONTHLY EARNINGS POTENTIAL</div>
+    <div class="earnings-num">₹23,000</div>
+    <div class="earnings-sub">20 din kaam karne par (median earnings)</div>
+    <div class="earnings-bar-wrap">
+      <div class="earnings-bar-label"><span>Part-time (4hr/day)</span><span>₹10,000+</span></div>
+      <div class="earnings-bar-bg"><div class="earnings-bar-fill" style="width:45%"></div></div>
+    </div>
+    <div class="earnings-bar-wrap">
+      <div class="earnings-bar-label"><span>Regular (8hr/day)</span><span>₹18,000+</span></div>
+      <div class="earnings-bar-bg"><div class="earnings-bar-fill" style="width:72%"></div></div>
+    </div>
+    <div class="earnings-bar-wrap" style="margin-bottom:0">
+      <div class="earnings-bar-label"><span>Full-time (12hr/day)</span><span>₹28,000+</span></div>
+      <div class="earnings-bar-bg"><div class="earnings-bar-fill" style="width:100%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <div class="section-header reveal">
+    <div class="section-tag">FAQ</div>
+    <h2 class="section-title">Aapke Sawaal, Hamare Jawab</h2>
+  </div>
+  <div class="faq-list reveal">
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Kya maid safe aur verified hoti hai?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Haan, 100%. Har maid ka Aadhaar verification hota hai, police character certificate check hota hai, aur background verification hoti hai. Uske baad training aur skill test hota hai tab platform par activate hoti hai. Aapke ghar mein sirf trusted professionals aate hain.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Maid na aaye toh kya hoga?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Hamare paas strict No-Show Zero policy hai. Agar maid 15 minutes late hai, hamare admin ko immediately alert milta hai aur backup maid assign hoti hai. Aapko wait nahi karna padega. Maid ko penalty bhi hoti hai no-show par.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Monthly plan mein koi cheez toot gayi toh?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Har booking par ₹5,000 tak ki damage guarantee hai. Koi bhi genuine damage ka claim karo — hamare support se baat karo. Investigation ke baad amount refund ya adjust hoga. Customers ka trust hi humaari sabse badi asset hai.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Kya app chahiye booking ke liye?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Abhi nahi! Sirf WhatsApp karo hamare number par. Service batao, time batao, address batao — booking confirm. App coming soon, par WhatsApp se kaam ekdum smooth hai — especially Hindi mein message karo, koi problem nahi.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Payment kaise karna hai?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">UPI se — PhonePe, Google Pay, Paytm, BHIM — koi bhi chalega. Cash bhi accept karte hain abhi. Monthly plan mein auto-debit option milega — ek baar setup karo, har mahine automatic. Digital invoice bhi milti hai tax ke liye.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggleFaq(this)">
+        Kya monthly plan pause kar sakte hain?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Bilkul! Vacation par ja rahe ho ya koi reason hai — monthly plan upto 15 days pause kar sakte ho, annual plan upto 30 days. Remaining visits carry forward honge. Koi paise waste nahi honge.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER CTA -->
+<section class="footer-cta">
+  <h2>Aaj Hi Shuru Karein — Pehli Booking Free!</h2>
+  <p>WhatsApp karo, 30 minute mein verified maid ghar pe. No app required.</p>
+  <div class="footer-actions">
+    <a href="https://wa.me/919999999999" class="btn-white">
+      📱 WhatsApp pe Book Karo
+    </a>
+    <a href="tel:+919999999999" class="btn-ghost-white">
+      📞 Call Karo
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="footer-logo">
+        <div class="footer-logo-icon">🏠</div>
+        QuickMaid
+      </a>
+      <p class="footer-tagline">Raipur ki pehli on-demand, verified maid service. Instant booking, monthly plans, aur annual subscriptions — sab ek jagah.</p>
+      <div class="footer-social">
+        <a href="#" class="social-btn">📘</a>
+        <a href="#" class="social-btn">📸</a>
+        <a href="#" class="social-btn">💬</a>
+        <a href="#" class="social-btn">🐦</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#">Home Cleaning</a></li>
+        <li><a href="#">Cooking Help</a></li>
+        <li><a href="#">Bartan Saaf</a></li>
+        <li><a href="#">Laundry</a></li>
+        <li><a href="#">Elderly Care</a></li>
+        <li><a href="#">Deep Cleaning</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Plans</h4>
+      <ul>
+        <li><a href="#">Instant Booking</a></li>
+        <li><a href="#">Monthly Plan</a></li>
+        <li><a href="#">Annual Plan</a></li>
+        <li><a href="#">B2B / Office</a></li>
+        <li><a href="#">PG / Hostel</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Maid Bano</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2025 QuickMaid. Made with ❤️ in Raipur, Chhattisgarh</div>
+    <div class="footer-cities">
+      <span class="city-tag">Raipur</span>
+      <span class="city-tag">Bhilai</span>
+      <span class="city-tag">Durg</span>
+      <span class="city-tag">Coming Soon →</span>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp Float -->
+<a href="https://wa.me/919999999999" class="whatsapp-float" title="WhatsApp pe Book Karo">💬</a>
+
+<script>
+  // FAQ toggle
+  function toggleFaq(btn) {
+    const item = btn.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => io.observe(el));
+</script>
+</body>
+</html>
