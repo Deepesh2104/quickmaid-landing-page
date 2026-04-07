@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickMaid — Maid Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --or:#FF5C1A;--or2:#FF7A40;--or-g:linear-gradient(135deg,#FF5C1A,#FF8B50);
+  --cream:#FBF8F4;--cream2:#F4EFE8;--ink:#13110E;--ink2:#2D2925;
+  --muted:#7A7068;--border:rgba(19,17,14,.08);--border2:rgba(19,17,14,.14);
+  --white:#FFFFFF;--g:#1C8C52;--g-p:#E8F5EE;
+  --radius:16px;--radius-lg:24px;
+  --shadow:0 4px 24px rgba(19,17,14,.08);--shadow-lg:0 16px 60px rgba(19,17,14,.14);
+  font-family:'Cabinet Grotesk',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);min-height:100vh;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--cream);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* TOPBAR */
+.topbar{
+  height:64px;background:var(--ink);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;position:sticky;top:0;z-index:100;
+}
+.tb-logo{display:flex;align-items:center;gap:10px;font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;text-decoration:none;color:#fff;}
+.tb-logo-box{width:36px;height:36px;background:var(--or-g);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.tb-logo-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:-2px;font-weight:400;}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.tb-status{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(28,140,82,.2);border:1px solid rgba(28,140,82,.3);
+  border-radius:20px;padding:6px 14px;cursor:pointer;transition:.2s;
+}
+.tb-status.offline{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3);}
+.ts-dot{width:8px;height:8px;border-radius:50%;background:#4ADE80;}
+.tb-status.offline .ts-dot{background:#EF4444;}
+.ts-text{font-size:12px;font-weight:700;color:#4ADE80;}
+.tb-status.offline .ts-text{color:#EF4444;}
+.tb-notif{width:38px;height:38px;background:rgba(255,255,255,.08);border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;position:relative;}
+.notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;background:#EF4444;border-radius:50%;border:2px solid var(--ink);}
+.tb-user{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:6px 14px;cursor:pointer;}
+.tb-av{width:28px;height:28px;border-radius:8px;background:var(--or-g);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
+.tb-uname{font-size:13px;font-weight:700;color:#fff;}
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 64px);}
+.sidebar{
+  width:230px;background:var(--white);border-right:1px solid var(--border2);
+  padding:18px 12px;display:flex;flex-direction:column;gap:3px;
+  position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;
+}
+.sb-section{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:14px 10px 8px;}
+.nav-item{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 12px;border-radius:12px;cursor:pointer;
+  font-size:13px;font-weight:600;color:var(--muted);
+  transition:.2s;border:1px solid transparent;
+}
+.nav-item:hover{background:var(--cream2);color:var(--ink);}
+.nav-item.active{background:rgba(255,92,26,.08);color:var(--or);border-color:rgba(255,92,26,.18);}
+.nav-ico{font-size:16px;width:20px;text-align:center;}
+.nav-badge{margin-left:auto;background:var(--or);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;}
+.main{flex:1;padding:28px;overflow-y:auto;background:var(--cream);}
+.page{display:none;animation:pgIn .3s ease;}
+.page.active{display:block;}
+@keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* PAGE HEADER */
+.ph{margin-bottom:26px;}
+.ph-title{font-family:'Clash Display',sans-serif;font-size:24px;font-weight:700;margin-bottom:3px;}
+.ph-sub{font-size:13px;color:var(--muted);}
+
+/* CARD */
+.card{background:var(--white);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;}
+.card-title{font-size:15px;font-weight:700;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border2);}
+.mb16{margin-bottom:16px;}
+.mb24{margin-bottom:24px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+
+/* STATUS HERO */
+.status-hero{
+  background:var(--ink);border-radius:var(--radius-lg);padding:28px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:20px;position:relative;overflow:hidden;flex-wrap:wrap;gap:16px;
+}
+.status-hero::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,92,26,.2),transparent 65%);
+}
+.sh-left{}
+.sh-label{font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;}
+.sh-name{font-family:'Clash Display',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;}
+.sh-zone{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:16px;}
+.sh-toggle{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;padding:12px 18px;
+}
+.sh-toggle-lbl{font-size:13px;font-weight:600;color:#fff;}
+.sh-toggle-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px;}
+.big-toggle{
+  width:52px;height:28px;background:rgba(255,255,255,.1);border-radius:14px;
+  position:relative;cursor:pointer;border:1px solid rgba(255,255,255,.15);
+  transition:.3s;flex-shrink:0;
+}
+.big-toggle.on{background:var(--g);}
+.big-toggle::after{
+  content:'';position:absolute;top:3px;left:3px;
+  width:20px;height:20px;background:#fff;border-radius:50%;transition:.3s;
+}
+.big-toggle.on::after{left:27px;}
+.sh-right{display:flex;flex-direction:column;gap:10px;flex-shrink:0;}
+.sh-earn-box{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:16px 22px;text-align:center;
+}
+.se-lbl{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.se-val{font-family:'Clash Display',sans-serif;font-size:30px;font-weight:700;color:var(--or2);margin-bottom:2px;}
+.se-sub{font-size:11px;color:rgba(255,255,255,.35);}
+
+/* INCOMING BOOKING */
+.incoming-card{
+  background:linear-gradient(135deg,#0d3d24,#0f4d2e);
+  border:1.5px solid rgba(28,140,82,.4);
+  border-radius:var(--radius-lg);padding:22px;margin-bottom:20px;
+  position:relative;overflow:hidden;
+}
+.incoming-card::before{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,rgba(28,140,82,.3),transparent 65%);
+}
+.ic-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);
+  border-radius:20px;padding:5px 14px;margin-bottom:14px;
+}
+.ic-pulse{width:8px;height:8px;background:#4ADE80;border-radius:50%;animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.ic-badge-text{font-size:11px;font-weight:700;color:#4ADE80;}
+.ic-title{font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:4px;}
+.ic-sub{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:16px;}
+.ic-details{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px;}
+.ic-det-lbl{font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.ic-det-val{font-size:14px;font-weight:700;color:#fff;}
+.ic-det-sub{font-size:10px;color:rgba(255,255,255,.45);margin-top:2px;}
+.ic-timer{
+  background:rgba(255,255,255,.06);border-radius:12px;padding:12px 16px;
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;
+}
+.ict-lbl{font-size:11px;color:rgba(255,255,255,.4);}
+.ict-val{font-family:'Clash Display',sans-serif;font-size:24px;font-weight:700;color:#4ADE80;}
+.ic-actions{display:flex;gap:10px;}
+.ic-accept{
+  flex:1;background:linear-gradient(135deg,#1C8C52,#22C55E);color:#fff;
+  border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;
+  font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:.2s;
+}
+.ic-accept:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(28,140,82,.4);}
+.ic-decline{
+  background:rgba(255,255,255,.06);color:rgba(255,255,255,.6);
+  border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px 20px;
+  font-size:14px;font-weight:600;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;
+}
+
+/* ACTIVE JOB CARD */
+.active-job{
+  background:var(--ink2);border-radius:var(--radius-lg);padding:22px;
+  margin-bottom:20px;border:1px solid rgba(255,255,255,.06);
+}
+.aj-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.aj-badge{background:rgba(255,92,26,.2);color:var(--or2);font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:6px;}
+.aj-id{font-size:11px;color:rgba(255,255,255,.3);}
+.aj-cust{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.aj-cust-av{width:44px;height:44px;border-radius:12px;background:var(--or-g);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0;}
+.aj-cust-name{font-size:15px;font-weight:700;color:#fff;margin-bottom:2px;}
+.aj-cust-sub{font-size:11px;color:rgba(255,255,255,.4);}
+.aj-map-pill{
+  margin-left:auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  border-radius:10px;padding:7px 12px;font-size:11px;font-weight:600;color:rgba(255,255,255,.6);
+  cursor:pointer;
+}
+.aj-checklist{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.ajc-item{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.04);border-radius:10px;padding:10px 14px;
+  cursor:pointer;transition:.2s;
+}
+.ajc-item:hover{background:rgba(255,255,255,.07);}
+.ajc-check{
+  width:22px;height:22px;border-radius:6px;border:1.5px solid rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;
+}
+.ajc-check.done{background:var(--g);border-color:var(--g);}
+.ajc-label{font-size:13px;color:rgba(255,255,255,.7);}
+.ajc-label.done{text-decoration:line-through;color:rgba(255,255,255,.3);}
+.aj-otp-row{
+  background:rgba(255,255,255,.04);border:1.5px solid rgba(255,92,26,.25);
+  border-radius:12px;padding:14px;display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.ao-lbl{font-size:11px;color:rgba(255,255,255,.4);margin-bottom:4px;}
+.ao-val{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;color:var(--or2);letter-spacing:6px;}
+.ao-badge{font-size:10px;color:rgba(255,255,255,.35);}
+.aj-finish{
+  width:100%;background:var(--or-g);color:#fff;border:none;border-radius:12px;
+  padding:14px;font-size:14px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;
+  cursor:pointer;transition:.2s;box-shadow:0 4px 18px rgba(255,92,26,.35);
+}
+.aj-finish:hover{transform:translateY(-1px);}
+
+/* STATS ROW */
+.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.metric-card{
+  background:var(--white);border:1px solid var(--border2);
+  border-radius:var(--radius-lg);padding:20px;
+  transition:.2s;position:relative;overflow:hidden;
+}
+.metric-card:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+.metric-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.mc-or::after{background:var(--or-g);}
+.mc-gr::after{background:linear-gradient(90deg,#1C8C52,#22C55E);}
+.mc-bl::after{background:linear-gradient(90deg,#1D4ED8,#3B82F6);}
+.mc-am::after{background:linear-gradient(90deg,#B45309,#F59E0B);}
+.mc-ico{font-size:22px;margin-bottom:10px;}
+.mc-val{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;line-height:1;margin-bottom:3px;}
+.mc-lbl{font-size:11px;color:var(--muted);}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;}
+table.dt{width:100%;border-collapse:collapse;}
+table.dt th{padding:10px 16px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;background:var(--cream2);border-bottom:1px solid var(--border2);}
+table.dt td{padding:13px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;}
+table.dt tr:last-child td{border-bottom:none;}
+table.dt tr:hover td{background:var(--cream);}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.b-green{background:rgba(28,140,82,.1);color:var(--g);}
+.b-amber{background:rgba(245,158,11,.1);color:#B45309;}
+.b-red{background:rgba(239,68,68,.1);color:#EF4444;}
+.b-or{background:rgba(255,92,26,.1);color:var(--or);}
+.b-gray{background:var(--cream2);color:var(--muted);}
+.av-cell{display:flex;align-items:center;gap:9px;}
+.av{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.av-or{background:rgba(255,92,26,.12);color:var(--or);}
+.star-row{color:#F59E0B;font-size:12px;}
+.action-btn{background:var(--cream2);border:1px solid var(--border2);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:.2s;color:var(--ink);}
+.action-btn:hover{background:rgba(255,92,26,.1);color:var(--or);border-color:rgba(255,92,26,.3);}
+
+/* EARNINGS */
+.earn-chart-area{
+  background:var(--ink);border-radius:var(--radius-lg);padding:26px;margin-bottom:20px;
+}
+.eca-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.eca-title{font-size:14px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:4px;}
+.eca-val{font-family:'Clash Display',sans-serif;font-size:36px;font-weight:700;color:#fff;}
+.eca-sub{font-size:12px;color:rgba(255,255,255,.35);margin-top:2px;}
+.eca-tabs{display:flex;gap:4px;}
+.eca-tab{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 14px;font-size:11px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;color:rgba(255,255,255,.5);cursor:pointer;transition:.2s;}
+.eca-tab.active{background:var(--or);color:#fff;border-color:transparent;}
+.bars{display:flex;align-items:flex-end;gap:8px;height:120px;margin-bottom:10px;}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.bar{
+  width:100%;border-radius:6px 6px 0 0;background:rgba(255,255,255,.12);
+  transition:.5s;cursor:pointer;
+}
+.bar.today{background:var(--or-g);}
+.bar-lbl{font-size:9px;color:rgba(255,255,255,.3);}
+.bar-val{font-size:9px;color:rgba(255,255,255,.4);font-weight:700;}
+.earn-breakdown{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;}
+.eb-item{background:rgba(255,255,255,.05);border-radius:12px;padding:14px;}
+.eb-lbl{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:4px;}
+.eb-val{font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--or2);}
+.upi-box{
+  background:rgba(28,140,82,.12);border:1px solid rgba(28,140,82,.25);
+  border-radius:12px;padding:14px 18px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.ub-left{}
+.ub-lbl{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:3px;}
+.ub-val{font-size:14px;font-weight:700;color:#4ADE80;}
+.ub-upi{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;}
+.ub-btn{background:linear-gradient(135deg,#1C8C52,#22C55E);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:12px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:.2s;}
+.ub-btn:hover{transform:translateY(-1px);}
+
+/* SCHEDULE */
+.schedule-week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:20px;}
+.day-col{background:var(--white);border:1px solid var(--border2);border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;transition:.2s;}
+.day-col:hover{border-color:var(--or);}
+.day-col.today{border-color:var(--or);background:rgba(255,92,26,.04);}
+.day-col.off{background:var(--cream2);opacity:.6;}
+.dc-day{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px;}
+.dc-date{font-family:'Clash Display',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px;}
+.dc-slots{display:flex;flex-direction:column;gap:4px;}
+.dc-slot{
+  background:rgba(255,92,26,.1);color:var(--or);
+  font-size:9px;font-weight:700;padding:3px 6px;border-radius:6px;
+}
+.dc-slot.done{background:var(--g-p);color:var(--g);}
+.dc-slot.off{background:var(--cream2);color:var(--muted);}
+.dc-earn{font-size:10px;color:var(--g);font-weight:700;margin-top:4px;}
+.shift-card{background:var(--white);border:1px solid var(--border2);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px;}
+.sc-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border2);}
+.sc-title{font-size:14px;font-weight:700;}
+.sc-list{display:flex;flex-direction:column;}
+.sc-item{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border);}
+.sc-item:last-child{border-bottom:none;}
+.sci-time{
+  width:80px;font-size:12px;font-weight:700;color:var(--muted);
+  flex-shrink:0;text-align:right;
+}
+.sci-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.sci-dot.or{background:var(--or);}
+.sci-dot.gr{background:var(--g);}
+.sci-dot.gray{background:var(--border2);}
+.sci-content{flex:1;}
+.sci-title{font-size:13px;font-weight:700;margin-bottom:2px;}
+.sci-sub{font-size:11px;color:var(--muted);}
+.sci-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;flex-shrink:0;}
+
+/* REVIEWS PAGE */
+.review-summary{
+  background:var(--ink);border-radius:var(--radius-lg);padding:26px;
+  margin-bottom:20px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;
+}
+.rs-main{text-align:center;}
+.rs-stars{font-size:48px;font-weight:700;color:var(--or2);font-family:'Clash Display',sans-serif;}
+.rs-star-row{color:#F59E0B;font-size:22px;margin:4px 0;}
+.rs-total{font-size:12px;color:rgba(255,255,255,.35);}
+.rs-bars{flex:1;min-width:200px;}
+.rb-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.rb-lbl{font-size:12px;color:rgba(255,255,255,.5);width:40px;flex-shrink:0;}
+.rb-bg{flex:1;height:7px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;}
+.rb-fill{height:100%;border-radius:4px;background:#F59E0B;}
+.rb-cnt{font-size:11px;color:rgba(255,255,255,.3);width:28px;text-align:right;flex-shrink:0;}
+.rs-tips{display:flex;flex-direction:column;gap:8px;min-width:180px;}
+.rt-item{background:rgba(255,255,255,.06);border-radius:10px;padding:12px;}
+.rt-val{font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;color:var(--or2);margin-bottom:2px;}
+.rt-lbl{font-size:10px;color:rgba(255,255,255,.35);}
+.review-list{display:flex;flex-direction:column;gap:14px;}
+.review-card{background:var(--white);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:20px;}
+.rc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+.rc-cust{display:flex;align-items:center;gap:10px;}
+.rc-av{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.rc-name{font-size:13px;font-weight:700;margin-bottom:2px;}
+.rc-date{font-size:10px;color:var(--muted);}
+.rc-stars{color:#F59E0B;font-size:14px;}
+.rc-text{font-size:13px;line-height:1.7;color:var(--ink2);font-style:italic;}
+.rc-tip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--g-p);color:var(--g);
+  font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:10px;
+}
+
+/* PROFILE */
+.maid-profile-header{
+  background:var(--ink);border-radius:var(--radius-lg);padding:28px;
+  display:flex;align-items:center;gap:22px;margin-bottom:20px;flex-wrap:wrap;
+}
+.mph-av{
+  width:80px;height:80px;border-radius:20px;background:var(--or-g);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Clash Display',sans-serif;font-size:32px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.mph-name{font-family:'Clash Display',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;}
+.mph-id{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:10px;}
+.mph-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.mt{font-size:10px;font-weight:700;padding:3px 12px;border-radius:20px;}
+.mt-green{background:rgba(28,140,82,.2);color:#4ADE80;}
+.mt-or{background:rgba(255,92,26,.2);color:var(--or2);}
+.mt-blue{background:rgba(59,130,246,.2);color:#93C5FD;}
+.mph-right{margin-left:auto;text-align:right;}
+.mpr-stat{font-family:'Clash Display',sans-serif;font-size:32px;font-weight:700;color:var(--or2);}
+.mpr-lbl{font-size:11px;color:rgba(255,255,255,.4);}
+.settings-section{background:var(--white);border:1px solid var(--border2);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px;}
+.ss-header{padding:16px 22px;font-size:14px;font-weight:700;border-bottom:1px solid var(--border2);}
+.ss-row{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid var(--border);}
+.ss-row:last-child{border-bottom:none;}
+.ss-left{display:flex;align-items:center;gap:12px;}
+.ss-ico{width:34px;height:34px;background:var(--cream2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.ss-label{font-size:13px;font-weight:600;}
+.ss-sub{font-size:11px;color:var(--muted);}
+.toggle{width:40px;height:22px;background:var(--cream2);border-radius:11px;position:relative;cursor:pointer;border:1px solid var(--border2);transition:.3s;}
+.toggle.on{background:var(--or);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:.3s;}
+.toggle.on::after{left:21px;}
+.ss-btn{background:var(--cream2);border:1px solid var(--border2);border-radius:9px;padding:6px 14px;font-size:11px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:.2s;color:var(--ink);}
+.ss-btn:hover{background:rgba(255,92,26,.1);color:var(--or);border-color:rgba(255,92,26,.3);}
+
+/* NOTIFICATIONS */
+.notif-list{display:flex;flex-direction:column;}
+.notif-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:.2s;}
+.notif-item:last-child{border-bottom:none;}
+.notif-item:hover{padding-left:4px;}
+.notif-item.unread{background:rgba(255,92,26,.02);}
+.ni-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ni-title{font-size:13px;font-weight:600;margin-bottom:2px;}
+.ni-sub{font-size:11px;color:var(--muted);line-height:1.5;}
+.ni-time{font-size:10px;color:var(--muted);margin-top:4px;}
+.ni-dot{width:7px;height:7px;background:var(--or);border-radius:50%;margin-left:auto;margin-top:4px;flex-shrink:0;}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--white);border:1px solid var(--border2);
+  border-radius:14px;padding:13px 20px;
+  display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;
+  box-shadow:var(--shadow-lg);
+  transform:translateY(70px);opacity:0;
+  transition:all .4s cubic-bezier(.34,1.56,.64,1);z-index:9999;pointer-events:none;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast-bar{width:3px;position:absolute;left:0;top:0;bottom:0;border-radius:14px 0 0 14px;background:var(--or-g);}
+
+@media(max-width:900px){
+  .sidebar{width:100%;height:auto;position:static;flex-direction:row;overflow-x:auto;padding:8px;gap:4px;}
+  .sb-section{display:none;}
+  .nav-item{padding:8px 12px;white-space:nowrap;}
+  .main{padding:16px;}
+  .metric-grid{grid-template-columns:1fr 1fr;}
+  .ic-details,.eb-item,.earn-breakdown{grid-template-columns:1fr 1fr;}
+  .schedule-week{grid-template-columns:repeat(4,1fr);}
+  .g2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="#" class="tb-logo">
+    <div class="tb-logo-box">🏠</div>
+    <div>
+      <div>QuickMaid</div>
+      <div class="tb-logo-sub">Maid Portal</div>
+    </div>
+  </a>
+  <div class="tb-right">
+    <div class="tb-status on" id="status-toggle" onclick="toggleOnline()">
+      <div class="ts-dot"></div>
+      <span class="ts-text" id="status-text">Online</span>
+    </div>
+    <div class="tb-notif" onclick="goPage('notifications',null)">🔔<div class="notif-dot"></div></div>
+    <div class="tb-user" onclick="goPage('profile',null)">
+      <div class="tb-av">S</div>
+      <div class="tb-uname">Savita Devi</div>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-section">Main</div>
+    <div class="nav-item active" onclick="goPage('home',this)"><span class="nav-ico">🏠</span>Home</div>
+    <div class="nav-item" onclick="goPage('incoming',this)"><span class="nav-ico">📲</span>Incoming Jobs<span class="nav-badge">2</span></div>
+    <div class="nav-item" onclick="goPage('active',this)"><span class="nav-ico">⚡</span>Active Job</div>
+    <div class="nav-item" onclick="goPage('schedule',this)"><span class="nav-ico">📅</span>My Schedule</div>
+    <div class="sb-section">Finance</div>
+    <div class="nav-item" onclick="goPage('earnings',this)"><span class="nav-ico">💰</span>Earnings</div>
+    <div class="nav-item" onclick="goPage('history',this)"><span class="nav-ico">📋</span>Job History</div>
+    <div class="sb-section">Reputation</div>
+    <div class="nav-item" onclick="goPage('reviews',this)"><span class="nav-ico">⭐</span>Reviews</div>
+    <div class="nav-item" onclick="goPage('notifications',this)"><span class="nav-ico">🔔</span>Notifications</div>
+    <div class="nav-item" onclick="goPage('profile',this)"><span class="nav-ico">👤</span>My Profile</div>
+  </div>
+
+  <div class="main">
+
+    <!-- ══ HOME ══ -->
+    <div id="page-home" class="page active">
+      <div class="status-hero">
+        <div class="sh-left">
+          <div class="sh-label">Maid Dashboard</div>
+          <div class="sh-name">Savita Devi 👋</div>
+          <div class="sh-zone">📍 Tatibandh Zone · ID: QM-M-001</div>
+          <div class="sh-toggle">
+            <div>
+              <div class="sh-toggle-lbl">Online Status</div>
+              <div class="sh-toggle-sub">On karo toh bookings milegi</div>
+            </div>
+            <div class="big-toggle on" id="big-toggle" onclick="toggleOnline()"></div>
+          </div>
+        </div>
+        <div class="sh-right">
+          <div class="sh-earn-box">
+            <div class="se-lbl">Aaj Ki Kamaai</div>
+            <div class="se-val">₹850</div>
+            <div class="se-sub">4 jobs complete today</div>
+          </div>
+          <div class="sh-earn-box" style="text-align:center">
+            <div class="se-lbl">Is Hafte</div>
+            <div class="se-val" style="font-size:22px">₹4,250</div>
+            <div class="se-sub">22 jobs · 5 days</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- METRIC CARDS -->
+      <div class="metric-grid mb24">
+        <div class="metric-card mc-or">
+          <div class="mc-ico">💰</div>
+          <div class="mc-val" style="color:var(--or)">₹21,750</div>
+          <div class="mc-lbl">This Month Earnings</div>
+        </div>
+        <div class="metric-card mc-gr">
+          <div class="mc-ico">📋</div>
+          <div class="mc-val" style="color:var(--g)">87</div>
+          <div class="mc-lbl">Jobs This Month</div>
+        </div>
+        <div class="metric-card mc-am">
+          <div class="mc-ico">⭐</div>
+          <div class="mc-val" style="color:#B45309">4.9</div>
+          <div class="mc-lbl">Avg Rating</div>
+        </div>
+        <div class="metric-card mc-bl">
+          <div class="mc-ico">🔄</div>
+          <div class="mc-val" style="color:#1D4ED8">94%</div>
+          <div class="mc-lbl">Acceptance Rate</div>
+        </div>
+      </div>
+
+      <!-- TODAY'S JOBS -->
+      <div class="card mb16">
+        <div class="card-title">📅 Aaj Ka Schedule</div>
+        <div class="sc-list">
+          <div class="sc-item">
+            <div class="sci-time">9:00 AM</div>
+            <div class="sci-dot gr"></div>
+            <div class="sci-content">
+              <div class="sci-title">✅ Cleaning 2hr — Neha Agarwal</div>
+              <div class="sci-sub">Tatibandh, Flat A-12 · ₹298 earned</div>
+            </div>
+            <span class="badge b-green sci-badge">Done</span>
+          </div>
+          <div class="sc-item">
+            <div class="sci-time">11:30 AM</div>
+            <div class="sci-dot gr"></div>
+            <div class="sci-content">
+              <div class="sci-title">✅ Bartan 1hr — Priya Mehta</div>
+              <div class="sci-sub">Civil Lines · ₹149 earned</div>
+            </div>
+            <span class="badge b-green sci-badge">Done</span>
+          </div>
+          <div class="sc-item">
+            <div class="sci-time">2:00 PM</div>
+            <div class="sci-dot or"></div>
+            <div class="sci-content">
+              <div class="sci-title">🍳 Cooking 1hr — Rohan Gupta</div>
+              <div class="sci-sub">Shankar Nagar · ₹199 pending</div>
+            </div>
+            <span class="badge b-amber sci-badge">In 20 min</span>
+          </div>
+          <div class="sc-item" style="border-bottom:none">
+            <div class="sci-time">4:00 PM</div>
+            <div class="sci-dot gray"></div>
+            <div class="sci-content">
+              <div class="sci-title">🧹 Deep Clean 3hr — Sunita Patel</div>
+              <div class="sci-sub">Civil Lines · ₹447 upcoming</div>
+            </div>
+            <span class="badge b-gray sci-badge">Upcoming</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="g2">
+        <div class="card" style="text-align:center;cursor:pointer" onclick="goPage('earnings',null)">
+          <div style="font-size:32px;margin-bottom:8px">💸</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:4px">Weekly Payout</div>
+          <div style="font-size:24px;font-weight:700;color:var(--g);font-family:'Clash Display',sans-serif">₹4,250</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">Friday ko aayega</div>
+        </div>
+        <div class="card" style="text-align:center;cursor:pointer" onclick="goPage('reviews',null)">
+          <div style="font-size:32px;margin-bottom:8px">⭐</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:4px">Aaj Ki Rating</div>
+          <div style="font-size:24px;font-weight:700;color:#B45309;font-family:'Clash Display',sans-serif">4.9 ★</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">147 total reviews</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ INCOMING JOBS ══ -->
+    <div id="page-incoming" class="page">
+      <div class="ph">
+        <div class="ph-title">Incoming Jobs 📲</div>
+        <div class="ph-sub">Nai booking requests — jaldi accept karo!</div>
+      </div>
+
+      <!-- INCOMING 1 -->
+      <div class="incoming-card" id="incoming-1">
+        <div class="ic-badge"><div class="ic-pulse"></div><span class="ic-badge-text">NEW REQUEST — 45 sec mein expire</span></div>
+        <div class="ic-title">Cleaning — 2 Hours</div>
+        <div class="ic-sub">Neha Agarwal · Tatibandh · 1.2 km away</div>
+        <div class="ic-details">
+          <div>
+            <div class="ic-det-lbl">Service</div>
+            <div class="ic-det-val">🧹 Home Cleaning</div>
+            <div class="ic-det-sub">2 hrs duration</div>
+          </div>
+          <div>
+            <div class="ic-det-lbl">Timing</div>
+            <div class="ic-det-val">Tomorrow 9 AM</div>
+            <div class="ic-det-sub">Apr 7, 2026</div>
+          </div>
+          <div>
+            <div class="ic-det-lbl">Earnings</div>
+            <div class="ic-det-val" style="color:#4ADE80">₹238</div>
+            <div class="ic-det-sub">After commission</div>
+          </div>
+        </div>
+        <div class="ic-timer">
+          <div class="ict-lbl">Accept karne ka time</div>
+          <div class="ict-val" id="timer-1">00:38</div>
+        </div>
+        <div class="ic-actions">
+          <button class="ic-accept" onclick="acceptJob('incoming-1')">✅ Accept Karo — ₹238</button>
+          <button class="ic-decline" onclick="declineJob('incoming-1')">✕ Decline</button>
+        </div>
+      </div>
+
+      <!-- INCOMING 2 -->
+      <div class="incoming-card" id="incoming-2">
+        <div class="ic-badge"><div class="ic-pulse" style="background:#F59E0B;"></div><span class="ic-badge-text" style="color:#FCD34D">MONTHLY PLAN CUSTOMER</span></div>
+        <div class="ic-title">Bartan Saaf — 1 Hour</div>
+        <div class="ic-sub">Rahul Gupta · Civil Lines · 2.8 km away</div>
+        <div class="ic-details">
+          <div>
+            <div class="ic-det-lbl">Service</div>
+            <div class="ic-det-val">🍽️ Bartan Saaf</div>
+            <div class="ic-det-sub">1 hr duration</div>
+          </div>
+          <div>
+            <div class="ic-det-lbl">Timing</div>
+            <div class="ic-det-val">Today 6 PM</div>
+            <div class="ic-det-sub">Apr 6, 2026</div>
+          </div>
+          <div>
+            <div class="ic-det-lbl">Earnings</div>
+            <div class="ic-det-val" style="color:#4ADE80">₹84</div>
+            <div class="ic-det-sub">After commission</div>
+          </div>
+        </div>
+        <div class="ic-actions">
+          <button class="ic-accept" onclick="acceptJob('incoming-2')">✅ Accept Karo — ₹84</button>
+          <button class="ic-decline" onclick="declineJob('incoming-2')">✕ Decline</button>
+        </div>
+      </div>
+
+      <!-- EMPTY STATE (hidden) -->
+      <div id="no-jobs" style="display:none">
+        <div class="card" style="text-align:center;padding:48px 24px">
+          <div style="font-size:48px;margin-bottom:16px">📭</div>
+          <div style="font-size:18px;font-weight:700;margin-bottom:8px">Abhi koi request nahi</div>
+          <div style="font-size:13px;color:var(--muted)">Online raho — booking request aते hi dikhegi</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ACTIVE JOB ══ -->
+    <div id="page-active" class="page">
+      <div class="ph">
+        <div class="ph-title">Active Job ⚡</div>
+        <div class="ph-sub">Abhi chal raha kaam</div>
+      </div>
+
+      <div class="active-job">
+        <div class="aj-top">
+          <div class="aj-badge"><span style="animation:blink 1.5s infinite;display:inline-block">🟠</span> Job In Progress</div>
+          <div class="aj-id">#QM-1847</div>
+        </div>
+        <div class="aj-cust">
+          <div class="aj-cust-av">N</div>
+          <div>
+            <div class="aj-cust-name">Neha Agarwal</div>
+            <div class="aj-cust-sub">📍 Flat A-12, Shanti Nagar, Tatibandh · 🧹 Cleaning 2hr</div>
+          </div>
+          <div class="aj-map-pill" onclick="showToast('Map khuld raha hai...','🗺️')">🗺️ Map</div>
+        </div>
+
+        <!-- CHECKLIST -->
+        <div style="font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px">Kaam Ki List</div>
+        <div class="aj-checklist">
+          <div class="ajc-item" onclick="checkItem(this)">
+            <div class="ajc-check done">✓</div>
+            <div class="ajc-label done">Living room sweep aur mop</div>
+          </div>
+          <div class="ajc-item" onclick="checkItem(this)">
+            <div class="ajc-check done">✓</div>
+            <div class="ajc-label done">Bedroom dusting aur vaccum</div>
+          </div>
+          <div class="ajc-item" onclick="checkItem(this)">
+            <div class="ajc-check"></div>
+            <div class="ajc-label">Kitchen slab aur sink clean karna</div>
+          </div>
+          <div class="ajc-item" onclick="checkItem(this)">
+            <div class="ajc-check"></div>
+            <div class="ajc-label">Bathroom floor scrub</div>
+          </div>
+          <div class="ajc-item" onclick="checkItem(this)">
+            <div class="ajc-check"></div>
+            <div class="ajc-label">Balcony sweep</div>
+          </div>
+        </div>
+
+        <!-- OTP -->
+        <div class="aj-otp-row">
+          <div>
+            <div class="ao-lbl">End OTP — Customer se lena hai</div>
+            <div class="ao-val">7163</div>
+          </div>
+          <div class="ao-badge">⏱ Started 1hr 15min ago</div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="aj-finish" style="flex:1" onclick="showToast('OTP enter karo fir complete karo','🔐')">🔐 End OTP Enter Karo</button>
+          <button class="ic-decline" onclick="showToast('Issue report ho gaya','⚠️')" style="border-radius:12px;padding:14px 18px">⚠️ Issue</button>
+        </div>
+        <button class="aj-finish" onclick="showToast('Job complete! ₹238 aapke account mein 🎉','✅')">✅ Job Complete Karo — ₹238 milega</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Customer Notes</div>
+        <div style="background:var(--cream2);border-radius:12px;padding:16px;font-size:13px;color:var(--muted);line-height:1.7">
+          "Bedroom aur living room mein extra dhyan dena. Kitchen slab bhi saaf karni hai. Bathroom flooring scrub karein. Please shoes bahar utaarein."
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SCHEDULE ══ -->
+    <div id="page-schedule" class="page">
+      <div class="ph">
+        <div class="ph-title">My Schedule 📅</div>
+        <div class="ph-sub">Is hafte ki bookings aur availability</div>
+      </div>
+
+      <!-- WEEK VIEW -->
+      <div class="schedule-week mb24">
+        <div class="day-col off">
+          <div class="dc-day">MON</div>
+          <div class="dc-date">31</div>
+          <div class="dc-slots"><div class="dc-slot off">Off</div></div>
+        </div>
+        <div class="day-col">
+          <div class="dc-day">TUE</div>
+          <div class="dc-date">1</div>
+          <div class="dc-slots">
+            <div class="dc-slot done">9AM ✓</div>
+            <div class="dc-slot done">11AM ✓</div>
+            <div class="dc-slot done">2PM ✓</div>
+          </div>
+          <div class="dc-earn">₹850</div>
+        </div>
+        <div class="day-col">
+          <div class="dc-day">WED</div>
+          <div class="dc-date">2</div>
+          <div class="dc-slots">
+            <div class="dc-slot done">9AM ✓</div>
+            <div class="dc-slot done">12PM ✓</div>
+          </div>
+          <div class="dc-earn">₹447</div>
+        </div>
+        <div class="day-col">
+          <div class="dc-day">THU</div>
+          <div class="dc-date">3</div>
+          <div class="dc-slots">
+            <div class="dc-slot done">10AM ✓</div>
+            <div class="dc-slot done">2PM ✓</div>
+            <div class="dc-slot done">5PM ✓</div>
+          </div>
+          <div class="dc-earn">₹746</div>
+        </div>
+        <div class="day-col">
+          <div class="dc-day">FRI</div>
+          <div class="dc-date">4</div>
+          <div class="dc-slots">
+            <div class="dc-slot done">9AM ✓</div>
+            <div class="dc-slot done">11AM ✓</div>
+          </div>
+          <div class="dc-earn">₹596</div>
+        </div>
+        <div class="day-col today">
+          <div class="dc-day">SAT</div>
+          <div class="dc-date" style="color:var(--or)">5</div>
+          <div class="dc-slots">
+            <div class="dc-slot done">9AM ✓</div>
+            <div class="dc-slot done">11AM ✓</div>
+            <div class="dc-slot">2PM</div>
+            <div class="dc-slot">4PM</div>
+          </div>
+          <div class="dc-earn">₹850</div>
+        </div>
+        <div class="day-col off">
+          <div class="dc-day">SUN</div>
+          <div class="dc-date">6</div>
+          <div class="dc-slots"><div class="dc-slot off">Off</div></div>
+        </div>
+      </div>
+
+      <!-- SHIFT SETTINGS -->
+      <div class="g2">
+        <div class="shift-card">
+          <div class="sc-header">
+            <div class="sc-title">⏰ Aaj Ka Schedule — Apr 6</div>
+            <button style="background:var(--cream2);border:1px solid var(--border2);border-radius:9px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Cabinet Grotesk',sans-serif" onclick="showToast('Schedule edit ho gaya','✏️')">Edit</button>
+          </div>
+          <div class="sc-list">
+            <div class="sc-item">
+              <div class="sci-time">9:00 AM</div>
+              <div class="sci-dot gr"></div>
+              <div class="sci-content"><div class="sci-title">🧹 Cleaning — Neha</div><div class="sci-sub">Tatibandh · 2hr · ₹238</div></div>
+              <span class="badge b-green">Done</span>
+            </div>
+            <div class="sc-item">
+              <div class="sci-time">11:30 AM</div>
+              <div class="sci-dot gr"></div>
+              <div class="sci-content"><div class="sci-title">🍽️ Bartan — Priya</div><div class="sci-sub">Civil Lines · 1hr · ₹84</div></div>
+              <span class="badge b-green">Done</span>
+            </div>
+            <div class="sc-item">
+              <div class="sci-time">2:00 PM</div>
+              <div class="sci-dot or"></div>
+              <div class="sci-content"><div class="sci-title">🍳 Cooking — Rohan</div><div class="sci-sub">Shankar Nagar · 1hr · ₹169</div></div>
+              <span class="badge b-amber">Upcoming</span>
+            </div>
+            <div class="sc-item" style="border-bottom:none">
+              <div class="sci-time">4:00 PM</div>
+              <div class="sci-dot gray"></div>
+              <div class="sci-content"><div class="sci-title">🧹 Deep Clean — Sunita</div><div class="sci-sub">Civil Lines · 3hr · ₹377</div></div>
+              <span class="badge b-gray">Pending</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">⚙️ Availability Settings</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Working Hours</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                <div style="background:var(--cream2);border:1px solid var(--border2);border-radius:10px;padding:10px">
+                  <div style="font-size:10px;color:var(--muted);margin-bottom:3px">Start</div>
+                  <div style="font-size:14px;font-weight:700">7:00 AM</div>
+                </div>
+                <div style="background:var(--cream2);border:1px solid var(--border2);border-radius:10px;padding:10px">
+                  <div style="font-size:10px;color:var(--muted);margin-bottom:3px">End</div>
+                  <div style="font-size:14px;font-weight:700">7:00 PM</div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Off Days</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <div style="background:rgba(239,68,68,.1);color:#EF4444;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px">Sunday</div>
+                <div style="background:var(--cream2);color:var(--muted);font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;cursor:pointer" onclick="showToast('Monday off mark ho gaya','✓')">Monday</div>
+                <div style="background:var(--cream2);color:var(--muted);font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;cursor:pointer" onclick="showToast('Chutti mark ho gayi','🏖️')">+ Add</div>
+              </div>
+            </div>
+            <button style="background:var(--or-g);color:#fff;border:none;border-radius:12px;padding:12px;font-size:13px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;width:100%" onclick="showToast('Schedule save ho gaya!','✅')">Save Schedule</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ EARNINGS ══ -->
+    <div id="page-earnings" class="page">
+      <div class="ph">
+        <div class="ph-title">Earnings 💰</div>
+        <div class="ph-sub">Aapki kamaai aur payment history</div>
+      </div>
+
+      <div class="earn-chart-area mb20">
+        <div class="eca-top">
+          <div>
+            <div class="eca-title">THIS MONTH</div>
+            <div class="eca-val">₹21,750</div>
+            <div class="eca-sub">87 jobs · 26 working days</div>
+          </div>
+          <div class="eca-tabs">
+            <div class="eca-tab active">Week</div>
+            <div class="eca-tab" onclick="this.parentNode.querySelectorAll('.eca-tab').forEach(t=>t.classList.remove('active'));this.classList.add('active')">Month</div>
+          </div>
+        </div>
+        <!-- BAR CHART (CSS) -->
+        <div class="bars">
+          <div class="bar-wrap"><div class="bar-val">₹600</div><div class="bar" style="height:55%"></div><div class="bar-lbl">Mon</div></div>
+          <div class="bar-wrap"><div class="bar-val">₹850</div><div class="bar" style="height:70%"></div><div class="bar-lbl">Tue</div></div>
+          <div class="bar-wrap"><div class="bar-val">₹447</div><div class="bar" style="height:38%"></div><div class="bar-lbl">Wed</div></div>
+          <div class="bar-wrap"><div class="bar-val">₹746</div><div class="bar" style="height:62%"></div><div class="bar-lbl">Thu</div></div>
+          <div class="bar-wrap"><div class="bar-val">₹596</div><div class="bar" style="height:50%"></div><div class="bar-lbl">Fri</div></div>
+          <div class="bar-wrap"><div class="bar-val">₹850</div><div class="bar today" style="height:70%"></div><div class="bar-lbl">Sat</div></div>
+          <div class="bar-wrap"><div class="bar-val">₹0</div><div class="bar" style="height:5%"></div><div class="bar-lbl">Sun</div></div>
+        </div>
+        <div class="earn-breakdown">
+          <div class="eb-item"><div class="eb-lbl">Total Earned</div><div class="eb-val">₹4,089</div></div>
+          <div class="eb-item"><div class="eb-lbl">Jobs Done</div><div class="eb-val">22</div></div>
+          <div class="eb-item"><div class="eb-lbl">Avg Per Job</div><div class="eb-val">₹186</div></div>
+        </div>
+        <div class="upi-box">
+          <div class="ub-left">
+            <div class="ub-lbl">NEXT PAYOUT — FRIDAY APR 10</div>
+            <div class="ub-val">₹4,089</div>
+            <div class="ub-upi">savita@phonepe · Direct UPI transfer</div>
+          </div>
+          <button class="ub-btn" onclick="showToast('Payout request confirm ho gayi!','✅')">Request Early Payout</button>
+        </div>
+      </div>
+
+      <!-- PAYOUT HISTORY -->
+      <div class="card">
+        <div class="card-title">💸 Payout History</div>
+        <div class="table-wrap">
+          <table class="dt">
+            <thead><tr><th>Date</th><th>Jobs</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Mar 31, 2026</td><td>21 jobs</td><td style="color:var(--g);font-weight:700">₹5,250</td><td>savita@phonepe</td><td><span class="badge b-green">Paid ✓</span></td></tr>
+              <tr><td>Mar 24, 2026</td><td>19 jobs</td><td style="color:var(--g);font-weight:700">₹4,750</td><td>savita@phonepe</td><td><span class="badge b-green">Paid ✓</span></td></tr>
+              <tr><td>Mar 17, 2026</td><td>22 jobs</td><td style="color:var(--g);font-weight:700">₹5,500</td><td>savita@phonepe</td><td><span class="badge b-green">Paid ✓</span></td></tr>
+              <tr><td>Mar 10, 2026</td><td>18 jobs</td><td style="color:var(--g);font-weight:700">₹4,500</td><td>savita@phonepe</td><td><span class="badge b-green">Paid ✓</span></td></tr>
+              <tr><td>Mar 3, 2026</td><td>7 jobs</td><td style="color:#B45309;font-weight:700">₹1,750</td><td>savita@phonepe</td><td><span class="badge b-green">Paid ✓</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ JOB HISTORY ══ -->
+    <div id="page-history" class="page">
+      <div class="ph">
+        <div class="ph-title">Job History 📋</div>
+        <div class="ph-sub">Sab complete aur pending jobs</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+          <div style="font-family:'Clash Display',sans-serif;font-size:13px;font-weight:600;color:var(--muted)">87 jobs this month</div>
+          <select style="background:var(--cream2);border:1px solid var(--border2);border-radius:9px;padding:7px 12px;font-size:12px;font-family:'Cabinet Grotesk',sans-serif;outline:none;cursor:pointer">
+            <option>This Month</option><option>Last Month</option><option>This Week</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="dt">
+            <thead><tr><th>#ID</th><th>Customer</th><th>Service</th><th>Date</th><th>Duration</th><th>Earned</th><th>Rating</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--muted)">#1847</td><td>Neha Agarwal</td><td>🧹 Cleaning</td><td>Apr 6</td><td>2 hr</td><td style="color:var(--g);font-weight:700">₹238</td><td><span class="star-row">★★★★★</span></td><td><span class="badge b-green">Done</span></td></tr>
+              <tr><td style="color:var(--muted)">#1836</td><td>Rahul Gupta</td><td>🍳 Cooking</td><td>Apr 5</td><td>1 hr</td><td style="color:var(--g);font-weight:700">₹169</td><td><span class="star-row">★★★★★</span></td><td><span class="badge b-green">Done</span></td></tr>
+              <tr><td style="color:var(--muted)">#1824</td><td>Anjali Tiwari</td><td>🍽️ Bartan</td><td>Apr 4</td><td>1 hr</td><td style="color:var(--g);font-weight:700">₹84</td><td><span class="star-row">★★★★☆</span></td><td><span class="badge b-green">Done</span></td></tr>
+              <tr><td style="color:var(--muted)">#1810</td><td>Priya Mehta</td><td>🧹 Cleaning</td><td>Apr 3</td><td>2 hr</td><td style="color:var(--g);font-weight:700">₹238</td><td><span class="star-row">★★★★★</span></td><td><span class="badge b-green">Done</span></td></tr>
+              <tr><td style="color:var(--muted)">#1798</td><td>Vijay Sharma</td><td>🧹 Deep Clean</td><td>Apr 1</td><td>3 hr</td><td style="color:var(--g);font-weight:700">₹377</td><td><span class="star-row">★★★★★</span></td><td><span class="badge b-green">Done</span></td></tr>
+              <tr><td style="color:var(--muted)">#1764</td><td>Sunita Patel</td><td>👔 Laundry</td><td>Mar 31</td><td>1 session</td><td style="color:var(--muted);font-weight:700">₹0</td><td style="color:var(--muted)">—</td><td><span class="badge b-red">Cancelled</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ REVIEWS ══ -->
+    <div id="page-reviews" class="page">
+      <div class="ph">
+        <div class="ph-title">Reviews & Ratings ⭐</div>
+        <div class="ph-sub">Customers ne aapke baare mein kya kaha</div>
+      </div>
+
+      <div class="review-summary mb24">
+        <div class="rs-main">
+          <div class="rs-stars">4.9</div>
+          <div class="rs-star-row">★★★★★</div>
+          <div class="rs-total">147 reviews</div>
+        </div>
+        <div class="rs-bars">
+          <div class="rb-row"><div class="rb-lbl">5 ★</div><div class="rb-bg"><div class="rb-fill" style="width:86%"></div></div><div class="rb-cnt">124</div></div>
+          <div class="rb-row"><div class="rb-lbl">4 ★</div><div class="rb-bg"><div class="rb-fill" style="width:30%;background:#94A3B8"></div></div><div class="rb-cnt">18</div></div>
+          <div class="rb-row"><div class="rb-lbl">3 ★</div><div class="rb-bg"><div class="rb-fill" style="width:5%;background:#D1D5DB"></div></div><div class="rb-cnt">4</div></div>
+          <div class="rb-row"><div class="rb-lbl">2 ★</div><div class="rb-bg"><div class="rb-fill" style="width:1%;background:#D1D5DB"></div></div><div class="rb-cnt">1</div></div>
+          <div class="rb-row"><div class="rb-lbl">1 ★</div><div class="rb-bg"><div class="rb-fill" style="width:0%"></div></div><div class="rb-cnt">0</div></div>
+        </div>
+        <div class="rs-tips">
+          <div class="rt-item"><div class="rt-val">₹2,840</div><div class="rt-lbl">Tips received</div></div>
+          <div class="rt-item"><div class="rt-val">92%</div><div class="rt-lbl">Would recommend</div></div>
+        </div>
+      </div>
+
+      <div class="review-list">
+        <div class="review-card">
+          <div class="rc-top">
+            <div class="rc-cust">
+              <div class="rc-av" style="background:rgba(255,92,26,.1);color:var(--or)">P</div>
+              <div>
+                <div class="rc-name">Priya Sharma</div>
+                <div class="rc-date">Apr 6, 2026 · Cleaning 2hr</div>
+              </div>
+            </div>
+            <div class="rc-stars">★★★★★</div>
+          </div>
+          <div class="rc-text">"Savita Didi bahut acchi hain! Ghar bilkul chamak gaya. Bahut professional aur samay par aati hain. 10 saal se agent se maid dhundh rahe the, ab monthly plan le liya bas inki wajah se."</div>
+          <div class="rc-tip">💰 ₹50 tip diya</div>
+        </div>
+        <div class="review-card">
+          <div class="rc-top">
+            <div class="rc-cust">
+              <div class="rc-av" style="background:rgba(28,140,82,.1);color:var(--g)">R</div>
+              <div>
+                <div class="rc-name">Rahul Gupta</div>
+                <div class="rc-date">Apr 5, 2026 · Cooking 1hr</div>
+              </div>
+            </div>
+            <div class="rc-stars">★★★★★</div>
+          </div>
+          <div class="rc-text">"Ghar jaisa khana banaya — dal tadka bilkul mummy ke haath ka laaga. Timing perfect thi. Definitely repeat karunga."</div>
+          <div class="rc-tip">💰 ₹30 tip diya</div>
+        </div>
+        <div class="review-card">
+          <div class="rc-top">
+            <div class="rc-cust">
+              <div class="rc-av" style="background:rgba(59,130,246,.1);color:#1D4ED8">A</div>
+              <div>
+                <div class="rc-name">Anjali Tiwari</div>
+                <div class="rc-date">Apr 4, 2026 · Bartan 1hr</div>
+              </div>
+            </div>
+            <div class="rc-stars">★★★★☆</div>
+          </div>
+          <div class="rc-text">"Kaam accha tha, thoda late aai lekin advance mein bataya tha. Koi baat nahi. Next time bhi bulaengi."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ NOTIFICATIONS ══ -->
+    <div id="page-notifications" class="page">
+      <div class="ph">
+        <div class="ph-title">Notifications 🔔</div>
+        <div class="ph-sub">Sab updates</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div style="font-size:13px;font-weight:600">4 unread</div>
+          <button class="action-btn" onclick="showToast('Sab read ho gayi','✓')">Mark All Read</button>
+        </div>
+        <div class="notif-list">
+          <div class="notif-item unread">
+            <div class="ni-ico" style="background:var(--g-p)">📲</div>
+            <div style="flex:1">
+              <div class="ni-title">Nai Booking Request!</div>
+              <div class="ni-sub">Neha Agarwal ne kal 9 AM ke liye cleaning book ki. 38 sec mein accept karo!</div>
+              <div class="ni-time">Just now</div>
+            </div>
+            <div class="ni-dot"></div>
+          </div>
+          <div class="notif-item unread">
+            <div class="ni-ico" style="background:rgba(245,158,11,.1)">💰</div>
+            <div style="flex:1">
+              <div class="ni-title">Payout Process Ho Raha Hai</div>
+              <div class="ni-sub">₹5,250 aapke savita@phonepe mein bheja ja raha hai. 2-4 hours mein milega.</div>
+              <div class="ni-time">1 hr ago</div>
+            </div>
+            <div class="ni-dot"></div>
+          </div>
+          <div class="notif-item unread">
+            <div class="ni-ico" style="background:rgba(255,92,26,.1)">⭐</div>
+            <div style="flex:1">
+              <div class="ni-title">Priya ne 5 Stars Diye!</div>
+              <div class="ni-sub">"Savita Didi bahut acchi hain!" — aur ₹50 tip bhi diya!</div>
+              <div class="ni-time">2 hr ago</div>
+            </div>
+            <div class="ni-dot"></div>
+          </div>
+          <div class="notif-item unread">
+            <div class="ni-ico" style="background:rgba(59,130,246,.1)">🏆</div>
+            <div style="flex:1">
+              <div class="ni-title">Top Maid of the Month!</div>
+              <div class="ni-sub">April mein #1 rank mil gayi! Admin ne ₹500 bonus add kar diya hai.</div>
+              <div class="ni-time">3 hr ago</div>
+            </div>
+            <div class="ni-dot"></div>
+          </div>
+          <div class="notif-item">
+            <div class="ni-ico" style="background:rgba(28,140,82,.1)">✅</div>
+            <div style="flex:1">
+              <div class="ni-title">Booking #1847 Complete</div>
+              <div class="ni-sub">Neha Agarwal ki booking complete. ₹238 aapke account mein add ho gaya.</div>
+              <div class="ni-time">Yesterday</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PROFILE ══ -->
+    <div id="page-profile" class="page">
+      <div class="ph">
+        <div class="ph-title">My Profile 👤</div>
+        <div class="ph-sub">Aapki profile aur document details</div>
+      </div>
+
+      <div class="maid-profile-header">
+        <div class="mph-av">S</div>
+        <div>
+          <div class="mph-name">Savita Devi</div>
+          <div class="mph-id">ID: QM-M-001 · Joined Jan 2025 · Tatibandh Zone</div>
+          <div class="mph-tags">
+            <span class="mt mt-green">✅ Aadhaar Verified</span>
+            <span class="mt mt-or">3 yr experience</span>
+            <span class="mt mt-blue">Cleaning Expert</span>
+            <span class="mt mt-green">Police Verified</span>
+          </div>
+        </div>
+        <div class="mph-right">
+          <div class="mpr-stat">4.9★</div>
+          <div class="mpr-lbl">Average Rating</div>
+        </div>
+      </div>
+
+      <div class="settings-section mb16">
+        <div class="ss-header">📋 Personal Information</div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">👤</div><div><div class="ss-label">Savita Devi</div><div class="ss-sub">Full Name</div></div></div>
+          <button class="ss-btn" onclick="showToast('Name edit form khula','✏️')">Edit</button>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">📱</div><div><div class="ss-label">+91 98765-00001</div><div class="ss-sub">Phone Number</div></div></div>
+          <span class="badge b-green">Verified</span>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">🪪</div><div><div class="ss-label">XXXX XXXX 1234</div><div class="ss-sub">Aadhaar Number</div></div></div>
+          <span class="badge b-green">Verified ✅</span>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">📍</div><div><div class="ss-label">Tatibandh, Raipur</div><div class="ss-sub">Working Zone</div></div></div>
+          <button class="ss-btn" onclick="showToast('Zone change ke liye admin se contact karo','📍')">Change</button>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">🛠️</div><div><div class="ss-label">Cleaning, Cooking, Bartan</div><div class="ss-sub">Services I offer</div></div></div>
+          <button class="ss-btn" onclick="showToast('Services update ho gayi','🛠️')">Edit</button>
+        </div>
+      </div>
+
+      <div class="settings-section mb16">
+        <div class="ss-header">💳 Payment Details</div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">📲</div><div><div class="ss-label">savita@phonepe</div><div class="ss-sub">Primary UPI · PhonePe</div></div></div>
+          <span class="badge b-green">Primary</span>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">🏦</div><div><div class="ss-label">SBI · ••••4521</div><div class="ss-sub">Bank Account</div></div></div>
+          <button class="ss-btn" onclick="showToast('Bank details edit ho gayi','🏦')">Edit</button>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">📅</div><div><div class="ss-label">Friday Weekly</div><div class="ss-sub">Payout Schedule</div></div></div>
+          <button class="ss-btn" onclick="showToast('Payout schedule change kar sakte ho','📅')">Change</button>
+        </div>
+      </div>
+
+      <div class="settings-section mb16">
+        <div class="ss-header">🔔 Notification Settings</div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">💬</div><div><div class="ss-label">WhatsApp Alerts</div><div class="ss-sub">Booking requests aur reminders</div></div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">📲</div><div><div class="ss-label">SMS</div><div class="ss-sub">OTP aur urgent alerts</div></div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">💰</div><div><div class="ss-label">Payment Notifications</div><div class="ss-sub">Payout aur earnings updates</div></div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="ss-header">🛡️ Documents & Verification</div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">🪪</div><div><div class="ss-label">Aadhaar Card</div><div class="ss-sub">Uploaded & Verified</div></div></div>
+          <span class="badge b-green">✅ Done</span>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">🚔</div><div><div class="ss-label">Police Certificate</div><div class="ss-sub">Character verification</div></div></div>
+          <span class="badge b-green">✅ Done</span>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">🎓</div><div><div class="ss-label">Training Certificate</div><div class="ss-sub">QuickMaid certified</div></div></div>
+          <span class="badge b-green">✅ Done</span>
+        </div>
+        <div class="ss-row" style="border-bottom:none">
+          <div class="ss-left"><div class="ss-ico">🚪</div><div><div class="ss-label" style="color:#EF4444">Logout</div><div class="ss-sub">Is device se logout ho jao</div></div></div>
+          <button class="ss-btn" style="color:#EF4444;border-color:rgba(239,68,68,.2)" onclick="showToast('Logout ho gaye 👋','🚪')">Logout</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-bar"></div>
+  <span id="toast-icon">✅</span>
+  <span id="toast-msg">Done!</span>
+</div>
+
+<script>
+// NAV
+function goPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg)pg.classList.add('active');
+  if(el)el.classList.add('active');
+}
+
+// TOGGLE ONLINE
+let isOnline=true;
+function toggleOnline(){
+  isOnline=!isOnline;
+  const toggle=document.getElementById('status-toggle');
+  const text=document.getElementById('status-text');
+  const big=document.getElementById('big-toggle');
+  if(isOnline){
+    toggle.classList.remove('offline');
+    text.textContent='Online';
+    big.classList.add('on');
+    showToast('Aap online hain! Bookings ab milegi 🟢','🟢');
+  } else {
+    toggle.classList.add('offline');
+    text.textContent='Offline';
+    big.classList.remove('on');
+    showToast('Aap offline hain. Koi booking nahi aayegi 🔴','🔴');
+  }
+}
+
+// JOB ACCEPT / DECLINE
+function acceptJob(id){
+  document.getElementById(id).style.display='none';
+  checkEmpty();
+  showToast('Job accept kar li! Customer ko confirm bheja gaya ✅','✅');
+}
+function declineJob(id){
+  document.getElementById(id).style.display='none';
+  checkEmpty();
+  showToast('Job decline kar di. Agli request aayegi','👋');
+}
+function checkEmpty(){
+  const v1=document.getElementById('incoming-1').style.display!=='none';
+  const v2=document.getElementById('incoming-2').style.display!=='none';
+  if(!v1&&!v2){document.getElementById('no-jobs').style.display='block';}
+}
+
+// CHECKLIST
+function checkItem(item){
+  const check=item.querySelector('.ajc-check');
+  const label=item.querySelector('.ajc-label');
+  const done=!check.classList.contains('done');
+  check.classList.toggle('done',done);
+  check.textContent=done?'✓':'';
+  label.classList.toggle('done',done);
+  if(done) showToast('Kaam complete!','✅');
+}
+
+// TIMER
+let timerVal=38;
+const timerEl=document.getElementById('timer-1');
+const timerInterval=setInterval(()=>{
+  if(timerVal<=0){clearInterval(timerInterval);timerEl.textContent='00:00';timerEl.style.color='#EF4444';return;}
+  timerVal--;
+  timerEl.textContent='00:'+String(timerVal).padStart(2,'0');
+},1000);
+
+// TOAST
+let tt;
+function showToast(msg,icon){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  document.getElementById('toast-icon').textContent=icon||'✅';
+  t.classList.add('show');
+  clearTimeout(tt);
+  tt=setTimeout(()=>t.classList.remove('show'),3200);
+}
+</script>
+</body>
+</html>

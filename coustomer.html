@@ -1,0 +1,1143 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickMaid — Customer Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --or:#FF5C1A;--or2:#FF7A40;--or-g:linear-gradient(135deg,#FF5C1A,#FF8B50);
+  --cream:#FBF8F4;--cream2:#F4EFE8;--ink:#13110E;--ink2:#2D2925;
+  --muted:#7A7068;--border:rgba(19,17,14,.08);--border2:rgba(19,17,14,.14);
+  --white:#FFFFFF;--g:#1C8C52;--g-p:#E8F5EE;
+  --radius:16px;--radius-lg:24px;
+  --shadow:0 4px 24px rgba(19,17,14,.08);--shadow-lg:0 16px 60px rgba(19,17,14,.14);
+  font-family:'Cabinet Grotesk',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--ink);min-height:100vh;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--cream);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* TOPBAR */
+.topbar{
+  height:64px;background:var(--white);border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;position:sticky;top:0;z-index:100;
+}
+.tb-logo{display:flex;align-items:center;gap:10px;font-family:'Clash Display',sans-serif;font-size:20px;font-weight:700;text-decoration:none;color:var(--ink);}
+.tb-logo-box{width:36px;height:36px;background:var(--or-g);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.tb-notif{width:38px;height:38px;background:var(--cream2);border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border2);font-size:16px;position:relative;}
+.notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;background:#EF4444;border-radius:50%;border:2px solid var(--white);}
+.tb-user{display:flex;align-items:center;gap:9px;background:var(--cream2);border:1px solid var(--border2);border-radius:12px;padding:6px 14px;cursor:pointer;}
+.tb-av{width:28px;height:28px;border-radius:8px;background:var(--or-g);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
+.tb-uname{font-size:13px;font-weight:700;}
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 64px);}
+.sidebar{
+  width:230px;background:var(--white);border-right:1px solid var(--border2);
+  padding:18px 12px;display:flex;flex-direction:column;gap:3px;
+  position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;
+}
+.sb-section{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;padding:14px 10px 8px;}
+.nav-item{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 12px;border-radius:12px;cursor:pointer;
+  font-size:13px;font-weight:600;color:var(--muted);
+  transition:.2s;border:1px solid transparent;
+}
+.nav-item:hover{background:var(--cream2);color:var(--ink);}
+.nav-item.active{background:rgba(255,92,26,.08);color:var(--or);border-color:rgba(255,92,26,.18);}
+.nav-ico{font-size:16px;width:20px;text-align:center;}
+.nav-badge{margin-left:auto;background:var(--or);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;}
+.main{flex:1;padding:28px;overflow-y:auto;background:var(--cream);}
+.page{display:none;animation:pgIn .3s ease;}
+.page.active{display:block;}
+@keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* PAGE HEADER */
+.ph{margin-bottom:26px;}
+.ph-title{font-family:'Clash Display',sans-serif;font-size:24px;font-weight:700;margin-bottom:3px;}
+.ph-sub{font-size:13px;color:var(--muted);}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;}
+.card-title{font-size:15px;font-weight:700;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border2);}
+
+/* GRID HELPERS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.mb16{margin-bottom:16px;}
+.mb24{margin-bottom:24px;}
+
+/* HOME — GREETING */
+.greeting-card{
+  background:var(--ink);border-radius:var(--radius-lg);padding:28px 32px;
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;
+  position:relative;overflow:hidden;
+}
+.greeting-card::before{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,92,26,.25),transparent 65%);
+  pointer-events:none;
+}
+.g-left{}
+.g-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(255,92,26,.18);border-radius:20px;padding:4px 12px;margin-bottom:10px;}
+.g-dot{width:7px;height:7px;background:var(--or2);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.g-eyebrow-text{font-size:11px;font-weight:600;color:var(--or2);}
+.g-title{font-family:'Clash Display',sans-serif;font-size:26px;font-weight:700;color:#fff;margin-bottom:6px;}
+.g-sub{font-size:13px;color:rgba(255,255,255,.5);}
+.g-actions{display:flex;gap:10px;margin-top:18px;}
+.btn-or{background:var(--or-g);color:#fff;border:none;border-radius:50px;padding:11px 22px;font-size:13px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:.2s;box-shadow:0 6px 20px rgba(255,92,26,.4);}
+.btn-or:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(255,92,26,.5);}
+.btn-ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:50px;padding:11px 20px;font-size:13px;font-weight:600;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:.2s;}
+.btn-ghost:hover{background:rgba(255,255,255,.18);}
+.g-right{flex-shrink:0;}
+.plan-pill{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;padding:18px 22px;text-align:center;min-width:160px;
+}
+.pp-lbl{font-size:10px;color:rgba(255,255,255,.4);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em;}
+.pp-val{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;color:var(--or2);margin-bottom:2px;}
+.pp-sub{font-size:11px;color:rgba(255,255,255,.35);}
+.pp-bar-bg{height:5px;background:rgba(255,255,255,.08);border-radius:3px;margin-top:10px;overflow:hidden;}
+.pp-bar{height:100%;background:var(--or-g);border-radius:3px;transition:.3s;}
+
+/* QUICK BOOK */
+.services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.srv-tile{
+  background:var(--white);border:1.5px solid var(--border2);
+  border-radius:var(--radius-lg);padding:20px 14px;text-align:center;
+  cursor:pointer;transition:.25s;position:relative;overflow:hidden;
+}
+.srv-tile::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--or-g);transform:scaleX(0);transform-origin:left;transition:.3s;}
+.srv-tile:hover{border-color:var(--or);transform:translateY(-3px);box-shadow:0 8px 28px rgba(255,92,26,.14);}
+.srv-tile:hover::after{transform:scaleX(1);}
+.srv-tile.sel{border-color:var(--or);background:rgba(255,92,26,.04);}
+.srv-tile.sel::after{transform:scaleX(1);}
+.st-ico{font-size:28px;margin-bottom:8px;}
+.st-name{font-size:13px;font-weight:700;margin-bottom:4px;}
+.st-price{font-size:11px;color:var(--muted);}
+
+/* BOOKING FORM */
+.book-form{background:var(--white);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:28px;margin-bottom:20px;}
+.book-form-title{font-size:16px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:9px;}
+.step-badge{width:26px;height:26px;background:var(--or-g);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.fg{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;}
+.fl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.fi{width:100%;background:var(--cream2);border:1.5px solid var(--border2);border-radius:11px;padding:12px 14px;font-size:13px;color:var(--ink);font-family:'Cabinet Grotesk',sans-serif;outline:none;transition:.2s;}
+.fi:focus{border-color:var(--or);background:var(--white);}
+.fs{width:100%;background:var(--cream2);border:1.5px solid var(--border2);border-radius:11px;padding:12px 14px;font-size:13px;color:var(--ink);font-family:'Cabinet Grotesk',sans-serif;outline:none;cursor:pointer;}
+.time-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.time-slot{
+  background:var(--cream2);border:1.5px solid var(--border2);
+  border-radius:10px;padding:9px;text-align:center;
+  font-size:12px;font-weight:600;cursor:pointer;transition:.2s;
+}
+.time-slot:hover{border-color:var(--or);color:var(--or);}
+.time-slot.sel{background:rgba(255,92,26,.1);border-color:var(--or);color:var(--or);}
+.time-slot.full{opacity:.4;cursor:not-allowed;}
+.duration-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.dur-btn{background:var(--cream2);border:1.5px solid var(--border2);border-radius:10px;padding:11px;text-align:center;cursor:pointer;transition:.2s;}
+.dur-btn:hover{border-color:var(--or);}
+.dur-btn.sel{background:rgba(255,92,26,.1);border-color:var(--or);}
+.dur-val{font-size:14px;font-weight:700;color:var(--ink);}
+.dur-lbl{font-size:10px;color:var(--muted);}
+.maid-select-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.maid-option{
+  background:var(--cream2);border:1.5px solid var(--border2);
+  border-radius:12px;padding:14px;cursor:pointer;transition:.2s;
+  display:flex;align-items:center;gap:12px;
+}
+.maid-option:hover{border-color:var(--or);}
+.maid-option.sel{border-color:var(--or);background:rgba(255,92,26,.04);}
+.mo-av{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;background:var(--or-g);color:#fff;}
+.mo-name{font-size:13px;font-weight:700;margin-bottom:2px;}
+.mo-sub{font-size:10px;color:var(--muted);}
+.mo-badge{margin-left:auto;background:var(--g-p);color:var(--g);font-size:9px;font-weight:700;padding:3px 7px;border-radius:6px;}
+.price-summary{background:var(--cream2);border-radius:14px;padding:18px;margin-bottom:20px;}
+.ps-row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:8px;}
+.ps-row.total{color:var(--ink);font-weight:700;font-size:15px;padding-top:10px;border-top:1px solid var(--border2);}
+.ps-val{font-weight:600;}
+.ps-row.total .ps-val{color:var(--or);font-family:'Clash Display',sans-serif;font-size:20px;}
+.btn-book{width:100%;background:var(--or-g);color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:.25s;box-shadow:0 6px 24px rgba(255,92,26,.38);}
+.btn-book:hover{transform:translateY(-1px);box-shadow:0 10px 32px rgba(255,92,26,.48);}
+.btn-sec{background:var(--white);color:var(--muted);border:1.5px solid var(--border2);border-radius:14px;padding:14px;font-size:14px;font-weight:600;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;width:100%;margin-top:10px;transition:.2s;}
+.btn-sec:hover{border-color:var(--or);color:var(--or);}
+
+/* ACTIVE BOOKING */
+.active-booking-card{
+  background:var(--ink);border-radius:var(--radius-lg);padding:22px;
+  margin-bottom:20px;position:relative;overflow:hidden;
+}
+.active-booking-card::before{
+  content:'';position:absolute;bottom:-60px;right:-60px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(28,140,82,.2),transparent 65%);
+}
+.ab-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.ab-badge{background:rgba(28,140,82,.2);color:#4ADE80;font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;display:flex;align-items:center;gap:6px;}
+.ab-pulse{width:7px;height:7px;background:#4ADE80;border-radius:50%;animation:blink 1.5s infinite;}
+.ab-id{font-size:11px;color:rgba(255,255,255,.35);}
+.ab-body{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+.ab-item-lbl{font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.ab-item-val{font-size:14px;font-weight:700;color:#fff;}
+.ab-item-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;}
+.progress-wrap{margin-bottom:14px;}
+.progress-steps{display:flex;align-items:center;gap:0;margin-bottom:8px;}
+.ps-step{display:flex;align-items:center;gap:0;flex:1;}
+.ps-dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:.3s;}
+.ps-dot.done{background:var(--g);color:#fff;}
+.ps-dot.active{background:var(--or);color:#fff;box-shadow:0 0 0 4px rgba(255,92,26,.3);}
+.ps-dot.pending{background:rgba(255,255,255,.1);color:rgba(255,255,255,.3);}
+.ps-line{flex:1;height:2px;margin:0 4px;}
+.ps-line.done{background:var(--g);}
+.ps-line.pending{background:rgba(255,255,255,.1);}
+.ps-labels{display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.3);padding:0 8px;}
+.ab-actions{display:flex;gap:10px;}
+.ab-btn{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:9px 16px;font-size:12px;font-weight:600;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:.2s;flex:1;text-align:center;}
+.ab-btn:hover{background:rgba(255,255,255,.15);}
+.ab-btn.danger{color:#FCA5A5;border-color:rgba(252,165,165,.3);}
+
+/* BOOKING HISTORY TABLE */
+.table-wrap{overflow-x:auto;}
+table.dt{width:100%;border-collapse:collapse;}
+table.dt th{padding:10px 16px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;background:var(--cream2);border-bottom:1px solid var(--border2);}
+table.dt td{padding:13px 16px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;}
+table.dt tr:last-child td{border-bottom:none;}
+table.dt tr:hover td{background:var(--cream);}
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;}
+.b-green{background:rgba(28,140,82,.1);color:var(--g);}
+.b-amber{background:rgba(245,158,11,.1);color:#B45309;}
+.b-red{background:rgba(239,68,68,.1);color:#EF4444;}
+.b-gray{background:var(--cream2);color:var(--muted);}
+.b-or{background:rgba(255,92,26,.1);color:var(--or);}
+.av-cell{display:flex;align-items:center;gap:9px;}
+.av{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.av-or{background:rgba(255,92,26,.12);color:var(--or);}
+.av-gr{background:rgba(28,140,82,.12);color:var(--g);}
+.av-name{font-size:13px;font-weight:700;}
+.av-sub{font-size:10px;color:var(--muted);}
+.action-btn{background:var(--cream2);border:1px solid var(--border2);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:.2s;color:var(--ink);}
+.action-btn:hover{background:rgba(255,92,26,.1);color:var(--or);border-color:rgba(255,92,26,.3);}
+.star-row{color:#F59E0B;font-size:13px;}
+
+/* PLAN CARDS */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+.plan-card{background:var(--white);border:1.5px solid var(--border2);border-radius:var(--radius-lg);padding:28px;position:relative;transition:.3s;}
+.plan-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.plan-card.pop{border-color:var(--or);box-shadow:0 6px 32px rgba(255,92,26,.16);}
+.plan-pop-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--or-g);color:#fff;font-size:10px;font-weight:700;padding:4px 16px;border-radius:50px;white-space:nowrap;}
+.pc-name{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.pc-price{font-family:'Clash Display',sans-serif;font-size:38px;font-weight:700;line-height:1;margin-bottom:8px;}
+.pc-price sup{font-size:20px;vertical-align:top;margin-top:6px;}
+.pc-price sub{font-family:'Cabinet Grotesk',sans-serif;font-size:13px;color:var(--muted);font-weight:400;}
+.pc-desc{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.6;}
+.pc-feats{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:22px;}
+.pc-feats li{font-size:12px;display:flex;align-items:center;gap:8px;}
+.pc-check{width:16px;height:16px;border-radius:50%;background:var(--g-p);color:var(--g);font-size:8px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.pc-btn{display:block;text-align:center;width:100%;border:none;border-radius:12px;padding:12px;font-size:13px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:.25s;}
+.pc-btn.primary{background:var(--or-g);color:#fff;box-shadow:0 4px 16px rgba(255,92,26,.35);}
+.pc-btn.primary:hover{transform:translateY(-1px);}
+.pc-btn.secondary{background:var(--cream2);color:var(--ink);border:1.5px solid var(--border2);}
+.pc-btn.secondary:hover{border-color:var(--or);color:var(--or);}
+
+/* CURRENT PLAN STATUS */
+.current-plan-card{
+  background:linear-gradient(135deg,#1a1007,#2d1a08);
+  border-radius:var(--radius-lg);padding:26px;margin-bottom:20px;
+  border:1px solid rgba(255,92,26,.2);position:relative;overflow:hidden;
+}
+.current-plan-card::after{
+  content:'';position:absolute;top:-40px;right:-40px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,92,26,.15),transparent 65%);
+}
+.cp-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.cp-badge{background:rgba(255,92,26,.2);color:var(--or2);font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;}
+.cp-edit{background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.1);border-radius:9px;padding:6px 14px;font-size:12px;font-weight:600;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;}
+.cp-name{font-family:'Clash Display',sans-serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:6px;}
+.cp-price{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:18px;}
+.cp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.cp-stat{background:rgba(255,255,255,.05);border-radius:12px;padding:14px;}
+.cp-stat-val{font-family:'Clash Display',sans-serif;font-size:22px;font-weight:700;color:var(--or2);margin-bottom:2px;}
+.cp-stat-lbl{font-size:10px;color:rgba(255,255,255,.35);}
+.visits-bar{margin-bottom:8px;}
+.vb-lbl{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.4);margin-bottom:6px;}
+.vb-bg{background:rgba(255,255,255,.08);border-radius:4px;height:8px;overflow:hidden;}
+.vb-fill{height:100%;background:var(--or-g);border-radius:4px;}
+
+/* NOTIFICATIONS */
+.notif-list{display:flex;flex-direction:column;gap:0;}
+.notif-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:.2s;}
+.notif-item:last-child{border-bottom:none;}
+.notif-item:hover{padding-left:4px;}
+.notif-item.unread{background:rgba(255,92,26,.02);}
+.ni-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ni-title{font-size:13px;font-weight:600;margin-bottom:2px;}
+.ni-sub{font-size:11px;color:var(--muted);line-height:1.5;}
+.ni-time{font-size:10px;color:var(--muted);margin-top:4px;}
+.ni-dot{width:7px;height:7px;background:var(--or);border-radius:50%;margin-left:auto;margin-top:4px;flex-shrink:0;}
+
+/* PROFILE */
+.profile-header{
+  background:var(--white);border:1px solid var(--border2);border-radius:var(--radius-lg);
+  padding:28px;display:flex;align-items:center;gap:22px;margin-bottom:20px;
+}
+.profile-av-big{
+  width:72px;height:72px;border-radius:20px;background:var(--or-g);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Clash Display',sans-serif;font-size:30px;font-weight:700;color:#fff;flex-shrink:0;
+}
+.profile-name{font-family:'Clash Display',sans-serif;font-size:22px;font-weight:700;margin-bottom:4px;}
+.profile-since{font-size:12px;color:var(--muted);}
+.profile-tags{display:flex;gap:8px;margin-top:10px;}
+.ptag{background:var(--cream2);color:var(--muted);font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;border:1px solid var(--border2);}
+.ptag.green{background:var(--g-p);color:var(--g);border-color:rgba(28,140,82,.2);}
+.ptag.or{background:rgba(255,92,26,.1);color:var(--or);border-color:rgba(255,92,26,.2);}
+.profile-ml{margin-left:auto;text-align:right;}
+.profile-stat-val{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;color:var(--or);}
+.profile-stat-lbl{font-size:11px;color:var(--muted);}
+.btn-edit-profile{background:var(--cream2);border:1.5px solid var(--border2);border-radius:10px;padding:8px 18px;font-size:13px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;margin-top:8px;transition:.2s;}
+.btn-edit-profile:hover{border-color:var(--or);color:var(--or);}
+.settings-section{background:var(--white);border:1px solid var(--border2);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:16px;}
+.ss-header{padding:16px 22px;font-size:14px;font-weight:700;border-bottom:1px solid var(--border2);}
+.ss-row{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid var(--border);}
+.ss-row:last-child{border-bottom:none;}
+.ss-left{display:flex;align-items:center;gap:12px;}
+.ss-ico{width:34px;height:34px;background:var(--cream2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.ss-label{font-size:13px;font-weight:600;}
+.ss-sub{font-size:11px;color:var(--muted);}
+.toggle{width:40px;height:22px;background:var(--cream2);border-radius:11px;position:relative;cursor:pointer;border:1px solid var(--border2);transition:.3s;}
+.toggle.on{background:var(--or);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:.3s;}
+.toggle.on::after{left:21px;}
+.ss-btn{background:var(--cream2);border:1px solid var(--border2);border-radius:9px;padding:6px 14px;font-size:11px;font-weight:700;font-family:'Cabinet Grotesk',sans-serif;cursor:pointer;transition:.2s;color:var(--ink);}
+.ss-btn:hover{background:rgba(255,92,26,.1);color:var(--or);border-color:rgba(255,92,26,.3);}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--white);border:1px solid var(--border2);
+  border-radius:14px;padding:13px 20px;
+  display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;
+  box-shadow:var(--shadow-lg);
+  transform:translateY(70px);opacity:0;
+  transition:all .4s cubic-bezier(.34,1.56,.64,1);z-index:9999;pointer-events:none;
+}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast-bar{width:3px;position:absolute;left:0;top:0;bottom:0;border-radius:14px 0 0 14px;background:var(--or-g);}
+
+/* BOOKING SUCCESS */
+.success-screen{text-align:center;padding:40px 20px;}
+.success-icon{font-size:64px;margin-bottom:16px;animation:pop .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.success-title{font-family:'Clash Display',sans-serif;font-size:28px;font-weight:700;margin-bottom:8px;}
+.success-sub{font-size:14px;color:var(--muted);margin-bottom:28px;}
+.success-card{background:var(--cream2);border-radius:var(--radius-lg);padding:20px;margin:0 auto 24px;max-width:360px;text-align:left;}
+.sc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+.sc-row:last-child{border-bottom:none;}
+.sc-key{font-size:12px;color:var(--muted);}
+.sc-val{font-size:13px;font-weight:700;}
+.success-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .layout{flex-direction:column;}
+  .sidebar{width:100%;height:auto;position:static;flex-direction:row;overflow-x:auto;padding:8px;gap:4px;}
+  .sb-section{display:none;}
+  .nav-item{padding:8px 12px;white-space:nowrap;}
+  .main{padding:16px;}
+  .g4,.services-grid{grid-template-columns:1fr 1fr;}
+  .plan-grid{grid-template-columns:1fr;}
+  .g3{grid-template-columns:1fr;}
+  .greeting-card{flex-direction:column;gap:16px;}
+  .g-right{width:100%;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="#" class="tb-logo">
+    <div class="tb-logo-box">🏠</div>
+    QuickMaid
+  </a>
+  <div class="tb-right">
+    <div class="tb-notif" onclick="goPage('notifications',null)">🔔<div class="notif-dot"></div></div>
+    <div class="tb-user" onclick="goPage('profile',null)">
+      <div class="tb-av">N</div>
+      <div><div class="tb-uname">Neha Agarwal</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-section">Menu</div>
+    <div class="nav-item active" onclick="goPage('home',this)"><span class="nav-ico">🏠</span>Home</div>
+    <div class="nav-item" onclick="goPage('book',this)"><span class="nav-ico">📱</span>New Booking<span class="nav-badge">Book</span></div>
+    <div class="nav-item" onclick="goPage('active',this)"><span class="nav-ico">⚡</span>Active Booking</div>
+    <div class="nav-item" onclick="goPage('history',this)"><span class="nav-ico">📋</span>History</div>
+    <div class="sb-section">My Account</div>
+    <div class="nav-item" onclick="goPage('plans',this)"><span class="nav-ico">📦</span>My Plan</div>
+    <div class="nav-item" onclick="goPage('maids',this)"><span class="nav-ico">👩</span>My Maids</div>
+    <div class="nav-item" onclick="goPage('notifications',this)"><span class="nav-ico">🔔</span>Notifications</div>
+    <div class="nav-item" onclick="goPage('profile',this)"><span class="nav-ico">👤</span>Profile</div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- ══ HOME ══ -->
+    <div id="page-home" class="page active">
+      <div class="greeting-card">
+        <div class="g-left">
+          <div class="g-eyebrow"><div class="g-dot"></div><span class="g-eyebrow-text">Aaj Monday hai — Schedule ready hai</span></div>
+          <div class="g-title">Namaskar, Neha ji! 🙏</div>
+          <div class="g-sub">Aaj Savita Didi 9:00 AM par aayengi</div>
+          <div class="g-actions">
+            <button class="btn-or" onclick="goPage('book',document.querySelectorAll('.nav-item')[1])">+ Naya Booking Karo</button>
+            <button class="btn-ghost" onclick="goPage('active',document.querySelectorAll('.nav-item')[2])">Live Track →</button>
+          </div>
+        </div>
+        <div class="g-right">
+          <div class="plan-pill">
+            <div class="pp-lbl">Monthly Plan</div>
+            <div class="pp-val">18</div>
+            <div class="pp-sub">visits remaining</div>
+            <div class="pp-bar-bg"><div class="pp-bar" style="width:69%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK BOOK -->
+      <div class="card mb24">
+        <div class="card-title">⚡ Quick Service Book Karo</div>
+        <div class="services-grid">
+          <div class="srv-tile sel" onclick="selectSrv(this,'cleaning')">
+            <div class="st-ico">🧹</div>
+            <div class="st-name">Cleaning</div>
+            <div class="st-price">₹149/hr</div>
+          </div>
+          <div class="srv-tile" onclick="selectSrv(this,'cooking')">
+            <div class="st-ico">🍳</div>
+            <div class="st-name">Cooking</div>
+            <div class="st-price">₹199/hr</div>
+          </div>
+          <div class="srv-tile" onclick="selectSrv(this,'bartan')">
+            <div class="st-ico">🍽️</div>
+            <div class="st-name">Bartan</div>
+            <div class="st-price">₹99/hr</div>
+          </div>
+          <div class="srv-tile" onclick="selectSrv(this,'laundry')">
+            <div class="st-ico">👔</div>
+            <div class="st-name">Laundry</div>
+            <div class="st-price">₹99/session</div>
+          </div>
+        </div>
+        <button class="btn-book" onclick="goPage('book',document.querySelectorAll('.nav-item')[1])">Abhi Book Karo →</button>
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="g3 mb24">
+        <div class="card" style="text-align:center">
+          <div style="font-size:28px;margin-bottom:8px">📋</div>
+          <div style="font-family:'Clash Display',sans-serif;font-size:30px;font-weight:700;color:var(--or)">34</div>
+          <div style="font-size:12px;color:var(--muted)">Total Bookings</div>
+        </div>
+        <div class="card" style="text-align:center">
+          <div style="font-size:28px;margin-bottom:8px">⭐</div>
+          <div style="font-family:'Clash Display',sans-serif;font-size:30px;font-weight:700;color:#B45309">4.8</div>
+          <div style="font-size:12px;color:var(--muted)">Avg Maid Rating</div>
+        </div>
+        <div class="card" style="text-align:center">
+          <div style="font-size:28px;margin-bottom:8px">💰</div>
+          <div style="font-family:'Clash Display',sans-serif;font-size:30px;font-weight:700;color:var(--g)">₹9,520</div>
+          <div style="font-size:12px;color:var(--muted)">Total Spent</div>
+        </div>
+      </div>
+
+      <!-- RECENT -->
+      <div class="card">
+        <div class="card-title">🕐 Recent Bookings</div>
+        <div class="table-wrap">
+          <table class="dt">
+            <thead><tr><th>Service</th><th>Maid</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div class="av-cell"><div class="av av-or">🧹</div><div><div class="av-name">Cleaning 2hr</div><div class="av-sub">Tatibandh</div></div></div></td>
+                <td><div class="av-cell"><div class="av av-gr">S</div><div class="av-name">Savita Devi</div></div></td>
+                <td style="color:var(--muted)">Today</td>
+                <td style="font-weight:700;color:var(--g)">₹298</td>
+                <td><span class="badge b-green">Done</span></td>
+                <td><button class="action-btn" onclick="showToast('Rating submit ho gayi! ⭐','⭐')">Rate</button></td>
+              </tr>
+              <tr>
+                <td><div class="av-cell"><div class="av av-or">🍳</div><div><div class="av-name">Cooking 1hr</div><div class="av-sub">Tatibandh</div></div></div></td>
+                <td><div class="av-cell"><div class="av av-gr">S</div><div class="av-name">Savita Devi</div></div></td>
+                <td style="color:var(--muted)">Apr 5</td>
+                <td style="font-weight:700;color:var(--g)">₹199</td>
+                <td><span class="badge b-green">Done</span></td>
+                <td><button class="action-btn" onclick="showToast('Re-book ho gaya!','📅')">Re-Book</button></td>
+              </tr>
+              <tr>
+                <td><div class="av-cell"><div class="av av-or">🍽️</div><div><div class="av-name">Bartan 1hr</div><div class="av-sub">Tatibandh</div></div></div></td>
+                <td><div class="av-cell"><div class="av av-gr">P</div><div class="av-name">Priya Yadav</div></div></td>
+                <td style="color:var(--muted)">Apr 4</td>
+                <td style="font-weight:700;color:var(--g)">₹149</td>
+                <td><span class="badge b-green">Done</span></td>
+                <td><button class="action-btn" onclick="showToast('Re-book ho gaya!','📅')">Re-Book</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ NEW BOOKING ══ -->
+    <div id="page-book" class="page">
+      <div class="ph">
+        <div class="ph-title">New Booking Karo 📱</div>
+        <div class="ph-sub">Service choose karo, time select karo — 30 seconds mein confirm</div>
+      </div>
+
+      <div id="book-form-wrap">
+        <!-- STEP 1: SERVICE -->
+        <div class="book-form mb16">
+          <div class="book-form-title"><div class="step-badge">1</div> Kaunsi Service Chahiye?</div>
+          <div class="services-grid" style="margin-bottom:0">
+            <div class="srv-tile sel" onclick="selectSrv(this,'cleaning');updatePrice()">
+              <div class="st-ico">🧹</div><div class="st-name">Cleaning</div><div class="st-price">₹149/hr</div>
+            </div>
+            <div class="srv-tile" onclick="selectSrv(this,'cooking');updatePrice()">
+              <div class="st-ico">🍳</div><div class="st-name">Cooking</div><div class="st-price">₹199/hr</div>
+            </div>
+            <div class="srv-tile" onclick="selectSrv(this,'bartan');updatePrice()">
+              <div class="st-ico">🍽️</div><div class="st-name">Bartan</div><div class="st-price">₹99/hr</div>
+            </div>
+            <div class="srv-tile" onclick="selectSrv(this,'laundry');updatePrice()">
+              <div class="st-ico">👔</div><div class="st-name">Laundry</div><div class="st-price">₹99/session</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: DATE & TIME -->
+        <div class="book-form mb16">
+          <div class="book-form-title"><div class="step-badge">2</div> Kab Chahiye?</div>
+          <div class="g2 mb16">
+            <div class="fg" style="margin-bottom:0">
+              <label class="fl">Date</label>
+              <input class="fi" type="date" id="book-date" value="2026-04-07">
+            </div>
+            <div class="fg" style="margin-bottom:0">
+              <label class="fl">Address</label>
+              <input class="fi" type="text" placeholder="Flat, Area, City" value="A-12, Shanti Nagar, Tatibandh">
+            </div>
+          </div>
+          <div class="fg">
+            <label class="fl">Time Slot Select Karo</label>
+            <div class="time-grid">
+              <div class="time-slot" onclick="selTime(this)">7:00 AM</div>
+              <div class="time-slot" onclick="selTime(this)">8:00 AM</div>
+              <div class="time-slot sel" onclick="selTime(this)">9:00 AM</div>
+              <div class="time-slot" onclick="selTime(this)">10:00 AM</div>
+              <div class="time-slot" onclick="selTime(this)">11:00 AM</div>
+              <div class="time-slot" onclick="selTime(this)">12:00 PM</div>
+              <div class="time-slot full">2:00 PM</div>
+              <div class="time-slot full">3:00 PM</div>
+            </div>
+          </div>
+          <div class="fg" style="margin-bottom:0">
+            <label class="fl">Duration Kitni?</label>
+            <div class="duration-grid">
+              <div class="dur-btn" onclick="selDur(this,1)"><div class="dur-val">1 hr</div><div class="dur-lbl">₹149</div></div>
+              <div class="dur-btn sel" onclick="selDur(this,2)"><div class="dur-val">2 hr</div><div class="dur-lbl">₹298</div></div>
+              <div class="dur-btn" onclick="selDur(this,3)"><div class="dur-val">3 hr</div><div class="dur-lbl">₹447</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: MAID -->
+        <div class="book-form mb16">
+          <div class="book-form-title"><div class="step-badge">3</div> Maid Choose Karo</div>
+          <div class="maid-select-grid">
+            <div class="maid-option sel" onclick="selMaid(this)">
+              <div class="mo-av">S</div>
+              <div>
+                <div class="mo-name">Savita Devi</div>
+                <div class="mo-sub">⭐ 4.9 · 147 bookings · 2 min away</div>
+              </div>
+              <div class="mo-badge">Preferred</div>
+            </div>
+            <div class="maid-option" onclick="selMaid(this)">
+              <div class="mo-av" style="background:linear-gradient(135deg,#1C8C52,#22C55E)">P</div>
+              <div>
+                <div class="mo-name">Priya Yadav</div>
+                <div class="mo-sub">⭐ 4.8 · 94 bookings · 5 min away</div>
+              </div>
+            </div>
+            <div class="maid-option" onclick="selMaid(this)">
+              <div class="mo-av" style="background:linear-gradient(135deg,#1D4ED8,#3B82F6)">R</div>
+              <div>
+                <div class="mo-name">Rekha Singh</div>
+                <div class="mo-sub">⭐ 4.8 · 82 bookings · 8 min away</div>
+              </div>
+            </div>
+            <div class="maid-option" onclick="selMaid(this)">
+              <div class="mo-av" style="background:linear-gradient(135deg,#B45309,#F59E0B)">K</div>
+              <div>
+                <div class="mo-name">Kavita Patel</div>
+                <div class="mo-sub">⭐ 4.7 · 68 bookings · 12 min away</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 4: PAYMENT -->
+        <div class="book-form">
+          <div class="book-form-title"><div class="step-badge">4</div> Payment</div>
+          <div class="price-summary">
+            <div class="ps-row"><span>Cleaning × 2 hrs</span><span class="ps-val">₹298</span></div>
+            <div class="ps-row"><span>Monthly Plan Discount (12%)</span><span class="ps-val" style="color:var(--g)">-₹36</span></div>
+            <div class="ps-row"><span>Platform Fee</span><span class="ps-val">₹0</span></div>
+            <div class="ps-row total"><span>Total</span><span class="ps-val">₹262</span></div>
+          </div>
+          <div class="fg mb16">
+            <label class="fl">Payment Method</label>
+            <select class="fs">
+              <option>💳 UPI (Google Pay / PhonePe)</option>
+              <option>🏦 Net Banking</option>
+              <option>💵 Cash on Service</option>
+              <option>📦 Monthly Plan Balance</option>
+            </select>
+          </div>
+          <div class="fg mb16">
+            <label class="fl">Special Instructions (Optional)</label>
+            <input class="fi" type="text" placeholder="Bedroom mein extra dhyan dena...">
+          </div>
+          <button class="btn-book" onclick="confirmBooking()">✅ Booking Confirm Karo — ₹262</button>
+          <button class="btn-sec" onclick="showToast('Draft save ho gaya','💾')">Baad Mein Karo</button>
+        </div>
+      </div>
+
+      <!-- SUCCESS SCREEN -->
+      <div id="book-success" style="display:none">
+        <div class="success-screen">
+          <div class="success-icon">🎉</div>
+          <div class="success-title">Booking Confirmed!</div>
+          <div class="success-sub">Savita Didi ko assign kar diya gaya hai — 28 min mein pahunchegi</div>
+          <div class="success-card">
+            <div class="sc-row"><span class="sc-key">Booking ID</span><span class="sc-val">#QM-1848</span></div>
+            <div class="sc-row"><span class="sc-key">Service</span><span class="sc-val">Cleaning 2hr</span></div>
+            <div class="sc-row"><span class="sc-key">Maid</span><span class="sc-val">Savita Devi ⭐ 4.9</span></div>
+            <div class="sc-row"><span class="sc-key">Time</span><span class="sc-val">Apr 7 · 9:00 AM</span></div>
+            <div class="sc-row"><span class="sc-key">Amount</span><span class="sc-val" style="color:var(--g)">₹262</span></div>
+            <div class="sc-row"><span class="sc-key">ETA</span><span class="sc-val" style="color:var(--or)">~28 minutes</span></div>
+          </div>
+          <div class="success-actions">
+            <button class="btn-or" onclick="goPage('active',document.querySelectorAll('.nav-item')[2])">Live Track Karo 📍</button>
+            <button class="btn-ghost" style="background:var(--cream2);color:var(--ink);border:1.5px solid var(--border2);border-radius:50px;padding:12px 20px;font-size:13px;font-weight:600;cursor:pointer;" onclick="resetBook()">New Booking Karo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ACTIVE BOOKING ══ -->
+    <div id="page-active" class="page">
+      <div class="ph">
+        <div class="ph-title">Active Booking ⚡</div>
+        <div class="ph-sub">Real-time tracking aur OTP management</div>
+      </div>
+
+      <div class="active-booking-card">
+        <div class="ab-top">
+          <div class="ab-badge"><div class="ab-pulse"></div> Live — Maid On the Way</div>
+          <div class="ab-id">Booking #QM-1847</div>
+        </div>
+        <div class="ab-body">
+          <div>
+            <div class="ab-item-lbl">Maid</div>
+            <div class="ab-item-val">Savita Devi</div>
+            <div class="ab-item-sub">⭐ 4.9 · Tatibandh</div>
+          </div>
+          <div>
+            <div class="ab-item-lbl">ETA</div>
+            <div class="ab-item-val" style="color:var(--or2)">12 min</div>
+            <div class="ab-item-sub">Out for pickup</div>
+          </div>
+          <div>
+            <div class="ab-item-lbl">Service</div>
+            <div class="ab-item-val">Cleaning</div>
+            <div class="ab-item-sub">2 hrs · ₹262</div>
+          </div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-steps">
+            <div class="ps-step">
+              <div class="ps-dot done">✓</div>
+              <div class="ps-line done"></div>
+            </div>
+            <div class="ps-step">
+              <div class="ps-dot done">✓</div>
+              <div class="ps-line done"></div>
+            </div>
+            <div class="ps-step">
+              <div class="ps-dot active">3</div>
+              <div class="ps-line pending"></div>
+            </div>
+            <div class="ps-step">
+              <div class="ps-dot pending">4</div>
+              <div class="ps-line pending"></div>
+            </div>
+            <div class="ps-dot pending">5</div>
+          </div>
+          <div class="ps-labels">
+            <span>Confirmed</span><span>Assigned</span><span>On Way</span><span>Arrived</span><span>Done</span>
+          </div>
+        </div>
+        <div class="ab-actions">
+          <div class="ab-btn" onclick="showToast('Didi ko call kiya! 📞','📞')">📞 Call Didi</div>
+          <div class="ab-btn" onclick="showToast('OTP 4829 share karo didi ke aane par','🔐')">🔐 Show OTP</div>
+          <div class="ab-btn danger" onclick="showToast('Cancel request bheja gaya','❌')">Cancel</div>
+        </div>
+      </div>
+
+      <!-- MAID DETAIL CARD -->
+      <div class="card mb16" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+        <div style="width:60px;height:60px;border-radius:16px;background:var(--or-g);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#fff;flex-shrink:0">S</div>
+        <div style="flex:1">
+          <div style="font-size:16px;font-weight:700;margin-bottom:3px">Savita Devi</div>
+          <div style="font-size:12px;color:var(--muted)">⭐ 4.9 · 147 bookings · Aadhaar Verified ✅</div>
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+            <span style="background:var(--g-p);color:var(--g);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px">Verified</span>
+            <span style="background:rgba(255,92,26,.1);color:var(--or);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px">3 yr experience</span>
+            <span style="background:var(--cream2);color:var(--muted);font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px">Cleaning Expert</span>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Previous rating</div>
+          <div style="color:#F59E0B;font-size:18px">★★★★★</div>
+        </div>
+      </div>
+
+      <!-- INSTRUCTIONS -->
+      <div class="card mb16">
+        <div class="card-title">📝 Booking Instructions</div>
+        <div style="background:var(--cream2);border-radius:12px;padding:16px;font-size:13px;color:var(--muted);line-height:1.7">
+          Bedroom aur living room mein extra dhyan dena. Kitchen slab bhi saaf karni hai. Bathroom flooring scrub karein.
+        </div>
+      </div>
+
+      <!-- OTP BOX -->
+      <div class="card">
+        <div class="card-title">🔐 OTP System</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div style="background:var(--g-p);border:1.5px solid rgba(28,140,82,.2);border-radius:14px;padding:18px;text-align:center">
+            <div style="font-size:11px;color:var(--g);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Start OTP</div>
+            <div style="font-family:'Clash Display',sans-serif;font-size:36px;font-weight:700;color:var(--g);letter-spacing:8px">4829</div>
+            <div style="font-size:11px;color:var(--g);opacity:.7;margin-top:6px">Didi ke aane par share karein</div>
+          </div>
+          <div style="background:rgba(239,68,68,.05);border:1.5px solid rgba(239,68,68,.15);border-radius:14px;padding:18px;text-align:center">
+            <div style="font-size:11px;color:#EF4444;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">End OTP</div>
+            <div style="font-family:'Clash Display',sans-serif;font-size:36px;font-weight:700;color:#EF4444;letter-spacing:8px">7163</div>
+            <div style="font-size:11px;color:#EF4444;opacity:.7;margin-top:6px">Kaam khatam hone par share karein</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HISTORY ══ -->
+    <div id="page-history" class="page">
+      <div class="ph">
+        <div class="ph-title">Booking History 📋</div>
+        <div class="ph-sub">Sab purani bookings ka record</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+          <select class="fs" style="width:auto">
+            <option>All Services</option><option>Cleaning</option><option>Cooking</option><option>Bartan</option>
+          </select>
+          <select class="fs" style="width:auto">
+            <option>Last 30 Days</option><option>Last 3 Months</option><option>This Year</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="dt">
+            <thead><tr><th>#ID</th><th>Service</th><th>Maid</th><th>Date</th><th>Duration</th><th>Amount</th><th>Rating</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--muted)">#1847</td><td>🧹 Cleaning</td><td><div class="av-cell"><div class="av av-or" style="width:28px;height:28px;font-size:11px">S</div>Savita Devi</div></td><td>Apr 6</td><td>2 hr</td><td style="color:var(--g);font-weight:700">₹298</td><td><span class="star-row">★★★★★</span></td><td><span class="badge b-green">Done</span></td><td><button class="action-btn" onclick="showToast('Re-book ho gaya! ✅','📅')">Re-Book</button></td></tr>
+              <tr><td style="color:var(--muted)">#1836</td><td>🍳 Cooking</td><td><div class="av-cell"><div class="av av-or" style="width:28px;height:28px;font-size:11px">S</div>Savita Devi</div></td><td>Apr 5</td><td>1 hr</td><td style="color:var(--g);font-weight:700">₹199</td><td><span class="star-row">★★★★★</span></td><td><span class="badge b-green">Done</span></td><td><button class="action-btn" onclick="showToast('Re-book ho gaya!','📅')">Re-Book</button></td></tr>
+              <tr><td style="color:var(--muted)">#1824</td><td>🍽️ Bartan</td><td><div class="av-cell"><div class="av av-gr" style="width:28px;height:28px;font-size:11px">P</div>Priya Yadav</div></td><td>Apr 4</td><td>1 hr</td><td style="color:var(--g);font-weight:700">₹99</td><td><span class="star-row">★★★★☆</span></td><td><span class="badge b-green">Done</span></td><td><button class="action-btn">Re-Book</button></td></tr>
+              <tr><td style="color:var(--muted)">#1810</td><td>🧹 Cleaning</td><td><div class="av-cell"><div class="av av-or" style="width:28px;height:28px;font-size:11px">S</div>Savita Devi</div></td><td>Apr 3</td><td>2 hr</td><td style="color:var(--g);font-weight:700">₹298</td><td><span class="star-row">★★★★★</span></td><td><span class="badge b-green">Done</span></td><td><button class="action-btn">Re-Book</button></td></tr>
+              <tr><td style="color:var(--muted)">#1798</td><td>🧹 Deep Clean</td><td><div class="av-cell"><div class="av av-or" style="width:28px;height:28px;font-size:11px">S</div>Savita Devi</div></td><td>Apr 1</td><td>3 hr</td><td style="color:var(--g);font-weight:700">₹447</td><td><span class="star-row">★★★★★</span></td><td><span class="badge b-green">Done</span></td><td><button class="action-btn">Re-Book</button></td></tr>
+              <tr><td style="color:var(--muted)">#1764</td><td>🧹 Cleaning</td><td style="color:var(--muted)">Unassigned</td><td>Mar 28</td><td>1 hr</td><td style="color:var(--muted);font-weight:700">₹149</td><td style="color:var(--muted)">—</td><td><span class="badge b-red">No-Show</span></td><td><button class="action-btn" onclick="showToast('Complaint darz ho gayi','🎧')">Complain</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PLANS ══ -->
+    <div id="page-plans" class="page">
+      <div class="ph">
+        <div class="ph-title">My Plan 📦</div>
+        <div class="ph-sub">Current plan aur upgrade options</div>
+      </div>
+
+      <div class="current-plan-card mb24">
+        <div class="cp-top">
+          <div class="cp-badge">✅ Active Plan</div>
+          <button class="cp-edit" onclick="showToast('Plan settings khuli','⚙️')">Manage</button>
+        </div>
+        <div class="cp-name">Monthly Plan</div>
+        <div class="cp-price">₹2,799 / month · April 2026</div>
+        <div class="cp-stats">
+          <div class="cp-stat">
+            <div class="cp-stat-val">18</div>
+            <div class="cp-stat-lbl">Visits Remaining</div>
+          </div>
+          <div class="cp-stat">
+            <div class="cp-stat-val">8</div>
+            <div class="cp-stat-lbl">Used This Month</div>
+          </div>
+          <div class="cp-stat">
+            <div class="cp-stat-val">24</div>
+            <div class="cp-stat-lbl">Days Left</div>
+          </div>
+        </div>
+        <div class="visits-bar">
+          <div class="vb-lbl"><span>Visits used this month</span><span>8 / 26</span></div>
+          <div class="vb-bg"><div class="vb-fill" style="width:31%"></div></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-or" onclick="showToast('Plan renew ho gaya! 🎉','🎉')">Renew Early</button>
+          <button class="btn-ghost" onclick="showToast('Plan 15 din ke liye pause ho gaya ⏸️','⏸️')">Pause Plan</button>
+        </div>
+      </div>
+
+      <div style="font-family:'Clash Display',sans-serif;font-size:18px;font-weight:700;margin-bottom:16px">Upgrade Options</div>
+      <div class="plan-grid">
+        <div class="plan-card">
+          <div class="pc-name">Instant</div>
+          <div class="pc-price"><sup>₹</sup>149<sub>/hr se</sub></div>
+          <div class="pc-desc">Jab chahiye tab book — koi commitment nahi</div>
+          <ul class="pc-feats">
+            <li><div class="pc-check">✓</div>Pay per booking</li>
+            <li><div class="pc-check">✓</div>Verified maid</li>
+            <li><div class="pc-check">✓</div>OTP system</li>
+          </ul>
+          <button class="pc-btn secondary">Current Plan Downgrade</button>
+        </div>
+        <div class="plan-card pop">
+          <div class="plan-pop-badge">⭐ Aapka Plan</div>
+          <div class="pc-name">Monthly</div>
+          <div class="pc-price"><sup>₹</sup>2,799<sub>/month</sub></div>
+          <div class="pc-desc">26 visits/month — Mon to Sat, daily service</div>
+          <ul class="pc-feats">
+            <li><div class="pc-check">✓</div>26 visits included</li>
+            <li><div class="pc-check">✓</div>Preferred maid</li>
+            <li><div class="pc-check">✓</div>15 days pause</li>
+            <li><div class="pc-check">✓</div>12% discount</li>
+          </ul>
+          <button class="pc-btn primary" onclick="showToast('Already active hai!','✅')">✅ Active Plan</button>
+        </div>
+        <div class="plan-card">
+          <div class="pc-name">Annual</div>
+          <div class="pc-price"><sup>₹</sup>28,000<sub>/year</sub></div>
+          <div class="pc-desc">Best value — 18% discount on monthly price</div>
+          <ul class="pc-feats">
+            <li><div class="pc-check">✓</div>312 visits included</li>
+            <li><div class="pc-check">✓</div>Dedicated maid</li>
+            <li><div class="pc-check">✓</div>Free deep clean 2x</li>
+            <li><div class="pc-check">✓</div>18% total savings</li>
+          </ul>
+          <button class="pc-btn primary" onclick="showToast('Annual plan upgrade ho gaya! 🎉','🎉')">Upgrade to Annual →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MY MAIDS ══ -->
+    <div id="page-maids" class="page">
+      <div class="ph">
+        <div class="ph-title">My Maids 👩</div>
+        <div class="ph-sub">Aapki preferred maids aur unki ratings</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;cursor:pointer" onclick="showToast('Savita Didi ka profile dekha','👁')">
+          <div style="width:56px;height:56px;border-radius:16px;background:var(--or-g);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0">S</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+              <span style="font-size:15px;font-weight:700">Savita Devi</span>
+              <span style="background:var(--g-p);color:var(--g);font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">Preferred</span>
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Tatibandh · 3 yr experience · Cleaning & Cooking Expert</div>
+            <div style="color:#F59E0B;font-size:14px">★★★★★ <span style="color:var(--muted);font-size:11px">4.9 · 147 bookings done with you</span></div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Next available</div>
+            <div style="font-size:13px;font-weight:700;color:var(--g)">Tomorrow 9 AM</div>
+            <button class="action-btn" style="margin-top:8px" onclick="showToast('Booking ho gayi!','✅')">Book Now</button>
+          </div>
+        </div>
+        <div class="card" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;cursor:pointer" onclick="showToast('Priya Yadav ka profile dekha','👁')">
+          <div style="width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#1C8C52,#22C55E);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0">P</div>
+          <div style="flex:1">
+            <div style="font-size:15px;font-weight:700;margin-bottom:4px">Priya Yadav</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Civil Lines · 2 yr experience · Bartan & Cleaning</div>
+            <div style="color:#F59E0B;font-size:14px">★★★★★ <span style="color:var(--muted);font-size:11px">4.8 · 12 bookings done with you</span></div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Next available</div>
+            <div style="font-size:13px;font-weight:700;color:var(--g)">Today 2 PM</div>
+            <button class="action-btn" style="margin-top:8px" onclick="showToast('Booking ho gayi!','✅')">Book Now</button>
+          </div>
+        </div>
+        <div class="card" style="background:var(--cream2);border-style:dashed;cursor:pointer;text-align:center;padding:28px" onclick="showToast('Nayi maid explore karo!','🔍')">
+          <div style="font-size:28px;margin-bottom:8px">👩+</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:4px">Nai Maid Add Karo</div>
+          <div style="font-size:12px;color:var(--muted)">Area ke available maids browse karo</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ NOTIFICATIONS ══ -->
+    <div id="page-notifications" class="page">
+      <div class="ph">
+        <div class="ph-title">Notifications 🔔</div>
+        <div class="ph-sub">Sab updates ek jagah</div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div style="font-size:13px;font-weight:600">3 unread notifications</div>
+          <button class="action-btn" onclick="showToast('Sab read mark ho gayi','✓')">Mark All Read</button>
+        </div>
+        <div class="notif-list">
+          <div class="notif-item unread">
+            <div class="ni-ico" style="background:var(--g-p)">✅</div>
+            <div style="flex:1">
+              <div class="ni-title">Booking #1847 Completed!</div>
+              <div class="ni-sub">Savita Didi ne aaj ka kaam pura kar diya. Rating dena na bhoolen!</div>
+              <div class="ni-time">2 min ago</div>
+            </div>
+            <div class="ni-dot"></div>
+          </div>
+          <div class="notif-item unread">
+            <div class="ni-ico" style="background:rgba(255,92,26,.1)">📅</div>
+            <div style="flex:1">
+              <div class="ni-title">Kal Ki Booking Reminder</div>
+              <div class="ni-sub">Savita Didi kal Apr 7 ko 9:00 AM par aayengi. Address confirm karein.</div>
+              <div class="ni-time">1 hr ago</div>
+            </div>
+            <div class="ni-dot"></div>
+          </div>
+          <div class="notif-item unread">
+            <div class="ni-ico" style="background:rgba(245,158,11,.1)">💰</div>
+            <div style="flex:1">
+              <div class="ni-title">Monthly Plan 24 Din Baki Hain</div>
+              <div class="ni-sub">Aapka plan May 1 ko renew hoga. Auto-renewal on hai.</div>
+              <div class="ni-time">3 hr ago</div>
+            </div>
+            <div class="ni-dot"></div>
+          </div>
+          <div class="notif-item">
+            <div class="ni-ico" style="background:rgba(59,130,246,.1)">⭐</div>
+            <div style="flex:1">
+              <div class="ni-title">Rating Dene Ka Shukriya!</div>
+              <div class="ni-sub">Aapne Savita Didi ko 5 stars diye. Unhe bahut khushi hui!</div>
+              <div class="ni-time">Yesterday</div>
+            </div>
+          </div>
+          <div class="notif-item">
+            <div class="ni-ico" style="background:rgba(28,140,82,.1)">🎁</div>
+            <div style="flex:1">
+              <div class="ni-title">Special Offer: Annual Plan</div>
+              <div class="ni-sub">Annual plan par abhi upgrade karein — 18% bachao + 2 free deep clean sessions!</div>
+              <div class="ni-time">2 days ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PROFILE ══ -->
+    <div id="page-profile" class="page">
+      <div class="ph">
+        <div class="ph-title">Profile 👤</div>
+        <div class="ph-sub">Account settings aur preferences</div>
+      </div>
+
+      <div class="profile-header">
+        <div class="profile-av-big">N</div>
+        <div>
+          <div class="profile-name">Neha Agarwal</div>
+          <div class="profile-since">Member since January 2025</div>
+          <div class="profile-tags">
+            <span class="ptag green">✅ Verified</span>
+            <span class="ptag or">Monthly Plan</span>
+            <span class="ptag">Tatibandh, Raipur</span>
+          </div>
+        </div>
+        <div class="profile-ml">
+          <div class="profile-stat-val">34</div>
+          <div class="profile-stat-lbl">Total Bookings</div>
+          <button class="btn-edit-profile" onclick="showToast('Profile edit mode','✏️')">Edit Profile</button>
+        </div>
+      </div>
+
+      <div class="g2 mb16">
+        <div class="settings-section">
+          <div class="ss-header">📋 Personal Info</div>
+          <div class="ss-row">
+            <div class="ss-left"><div class="ss-ico">👤</div><div><div class="ss-label">Neha Agarwal</div><div class="ss-sub">Full Name</div></div></div>
+            <button class="ss-btn" onclick="showToast('Name edit kiya','✏️')">Edit</button>
+          </div>
+          <div class="ss-row">
+            <div class="ss-left"><div class="ss-ico">📱</div><div><div class="ss-label">+91 98765-11111</div><div class="ss-sub">Phone</div></div></div>
+            <button class="ss-btn" onclick="showToast('Phone verify karo','📱')">Change</button>
+          </div>
+          <div class="ss-row">
+            <div class="ss-left"><div class="ss-ico">📍</div><div><div class="ss-label">Tatibandh, Raipur</div><div class="ss-sub">Default Address</div></div></div>
+            <button class="ss-btn" onclick="showToast('Address update ho gaya','📍')">Edit</button>
+          </div>
+          <div class="ss-row">
+            <div class="ss-left"><div class="ss-ico">📧</div><div><div class="ss-label">neha@gmail.com</div><div class="ss-sub">Email</div></div></div>
+            <button class="ss-btn" onclick="showToast('Email change karo','📧')">Edit</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="ss-header">💳 Payment Methods</div>
+          <div class="ss-row">
+            <div class="ss-left"><div class="ss-ico">📲</div><div><div class="ss-label">Google Pay</div><div class="ss-sub">neha@okaxis · Primary</div></div></div>
+            <span class="badge b-green">Active</span>
+          </div>
+          <div class="ss-row">
+            <div class="ss-left"><div class="ss-ico">📲</div><div><div class="ss-label">PhonePe</div><div class="ss-sub">98765@ybl</div></div></div>
+            <button class="ss-btn">Set Primary</button>
+          </div>
+          <div class="ss-row">
+            <div class="ss-left"><div class="ss-ico">➕</div><div><div class="ss-label">Add New UPI</div><div class="ss-sub">New payment method</div></div></div>
+            <button class="ss-btn" onclick="showToast('UPI add form khula','💳')">Add</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section mb16">
+        <div class="ss-header">🔔 Notification Preferences</div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">💬</div><div><div class="ss-label">WhatsApp Updates</div><div class="ss-sub">Booking confirmations aur reminders</div></div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">📲</div><div><div class="ss-label">SMS Alerts</div><div class="ss-sub">Maid arrival aur OTP</div></div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">📧</div><div><div class="ss-label">Email Receipts</div><div class="ss-sub">Payment receipts aur monthly summary</div></div></div>
+          <div class="toggle" onclick="this.classList.toggle('on')"></div>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">📣</div><div><div class="ss-label">Offers aur Discounts</div><div class="ss-sub">Special deals aur promotions</div></div></div>
+          <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+        </div>
+      </div>
+
+      <div class="settings-section mb16">
+        <div class="ss-header">🛡️ Account & Security</div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">🔑</div><div><div class="ss-label">Change Password</div><div class="ss-sub">Last changed 3 months ago</div></div></div>
+          <button class="ss-btn" onclick="showToast('Password change link bheja gaya','🔑')">Change</button>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">📞</div><div><div class="ss-label">Customer Support</div><div class="ss-sub">Help chahiye? Call ya chat karo</div></div></div>
+          <button class="ss-btn" onclick="showToast('Support se connect ho rahe hain...','🎧')">Contact</button>
+        </div>
+        <div class="ss-row">
+          <div class="ss-left"><div class="ss-ico">🚪</div><div><div class="ss-label" style="color:#EF4444">Logout</div><div class="ss-sub">Is device se logout ho jao</div></div></div>
+          <button class="ss-btn" style="color:#EF4444;border-color:rgba(239,68,68,.2)" onclick="showToast('Logout ho gaye 👋','🚪')">Logout</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-bar"></div>
+  <span id="toast-icon">✅</span>
+  <span id="toast-msg">Done!</span>
+</div>
+
+<script>
+// NAV
+function goPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg)pg.classList.add('active');
+  if(el)el.classList.add('active');
+}
+
+// SERVICE SELECT
+function selectSrv(tile,type){
+  const parent=tile.closest('.services-grid')||tile.closest('.g4');
+  parent.querySelectorAll('.srv-tile').forEach(t=>t.classList.remove('sel'));
+  tile.classList.add('sel');
+  updatePrice();
+}
+function selTime(slot){
+  if(slot.classList.contains('full'))return;
+  const parent=slot.closest('.time-grid');
+  parent.querySelectorAll('.time-slot').forEach(t=>t.classList.remove('sel'));
+  slot.classList.add('sel');
+}
+function selDur(btn,hrs){
+  const parent=btn.closest('.duration-grid');
+  parent.querySelectorAll('.dur-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  updatePrice();
+}
+function selMaid(opt){
+  const parent=opt.closest('.maid-select-grid');
+  parent.querySelectorAll('.maid-option').forEach(m=>m.classList.remove('sel'));
+  opt.classList.add('sel');
+}
+function updatePrice(){}
+
+// CONFIRM BOOKING
+function confirmBooking(){
+  document.getElementById('book-form-wrap').style.display='none';
+  document.getElementById('book-success').style.display='block';
+  showToast('Booking confirm ho gayi! 🎉','🎉');
+}
+function resetBook(){
+  document.getElementById('book-form-wrap').style.display='block';
+  document.getElementById('book-success').style.display='none';
+}
+
+// TOAST
+let tt;
+function showToast(msg,icon){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  document.getElementById('toast-icon').textContent=icon||'✅';
+  t.classList.add('show');
+  clearTimeout(tt);
+  tt=setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>
