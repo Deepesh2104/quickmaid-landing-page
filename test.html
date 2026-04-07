@@ -21,68 +21,6 @@
 html{scroll-behavior:smooth;}
 body{background:var(--cream);color:var(--ink);overflow-x:hidden;}
 
-/* ======= MOBILE BLOCK SCREEN ======= */
-#mobile-block{
-  display:none;
-  min-height:100vh;
-  background:var(--ink2);
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:40px 28px;
-  text-align:center;
-  position:fixed;
-  top:0;left:0;right:0;bottom:0;
-  z-index:9999;
-}
-.mb-logo{display:flex;align-items:center;gap:10px;margin-bottom:40px;justify-content:center;}
-.mb-logo-box{width:44px;height:44px;background:var(--or-g);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;}
-.mb-logo-text{font-family:'Clash Display',sans-serif;font-size:24px;font-weight:700;color:#fff;}
-.mb-icon-wrap{
-  width:100px;height:100px;
-  background:rgba(255,92,26,.12);
-  border:2px solid rgba(255,92,26,.25);
-  border-radius:28px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:48px;
-  margin:0 auto 28px;
-}
-.mb-title{
-  font-family:'Clash Display',sans-serif;
-  font-size:26px;font-weight:700;color:#fff;
-  line-height:1.2;margin-bottom:14px;
-}
-.mb-title em{font-style:normal;color:var(--or2);}
-.mb-desc{
-  font-size:15px;color:rgba(255,255,255,.5);
-  line-height:1.75;max-width:320px;margin:0 auto 36px;
-}
-.mb-devices{
-  display:flex;gap:16px;justify-content:center;margin-bottom:36px;
-  flex-wrap:wrap;
-}
-.mb-device{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:16px;
-  padding:16px 20px;
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  min-width:90px;
-}
-.mb-device-ico{font-size:28px;}
-.mb-device-lbl{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;}
-.mb-back-btn{
-  background:var(--or-g);color:#fff;
-  border:none;border-radius:50px;
-  padding:14px 32px;font-size:15px;font-weight:700;
-  font-family:'Cabinet Grotesk',sans-serif;
-  cursor:pointer;
-  box-shadow:0 8px 28px rgba(255,92,26,.4);
-  transition:.2s;
-}
-.mb-back-btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,92,26,.5);}
-.mb-hint{font-size:12px;color:rgba(255,255,255,.25);margin-top:16px;}
-
 /* ======= LANDING ======= */
 #landing{display:block;}
 
@@ -816,7 +754,6 @@ footer{background:var(--ink);padding:64px 5% 32px;}
 .reveal{opacity:0;transform:translateY(28px);transition:.65s ease;}
 .reveal.visible{opacity:1;transform:translateY(0);}
 
-/* ======= RESPONSIVE ======= */
 @media(max-width:900px){
   .hero{grid-template-columns:1fr;}
   .hero-visual{display:none;}
@@ -832,56 +769,9 @@ footer{background:var(--ink);padding:64px 5% 32px;}
   .charts-grid{grid-template-columns:1fr;}
   .sidebar{display:none;}
 }
-
-@media(max-width:580px){
-  .trust-strip{grid-template-columns:1fr 1fr;}
-  .testi-grid,.plan-grid,.srv-grid{grid-template-columns:1fr;}
-  .how-grid{grid-template-columns:1fr;}
-  .footer-grid{grid-template-columns:1fr;}
-  .hero-trust{gap:16px;}
-  .hero-btns{flex-direction:column;}
-  .btn-hero-p,.btn-hero-s{justify-content:center;}
-  .ft-btns{flex-direction:column;align-items:center;}
-}
 </style>
 </head>
 <body>
-
-<!-- ======= MOBILE BLOCK SCREEN ======= -->
-<div id="mobile-block">
-  <div class="mb-logo">
-    <div class="mb-logo-box">🏠</div>
-    <span class="mb-logo-text">QuickMaid</span>
-  </div>
-  <div class="mb-icon-wrap">💻</div>
-  <div class="mb-title">
-    Admin Portal ke liye<br>
-    <em>Bada Screen Chahiye</em>
-  </div>
-  <p class="mb-desc">
-    Admin dashboard mobile par use nahi ho sakta. Behtar experience ke liye in devices par open karein:
-  </p>
-  <div class="mb-devices">
-    <div class="mb-device">
-      <div class="mb-device-ico">🖥️</div>
-      <div class="mb-device-lbl">Desktop</div>
-    </div>
-    <div class="mb-device">
-      <div class="mb-device-ico">💻</div>
-      <div class="mb-device-lbl">Laptop</div>
-    </div>
-    <div class="mb-device">
-      <div class="mb-device-ico">🖱️</div>
-      <div class="mb-device-lbl">Computer</div>
-    </div>
-    <div class="mb-device">
-      <div class="mb-device-ico">📱</div>
-      <div class="mb-device-lbl">Tablet (bada)</div>
-    </div>
-  </div>
-  <button class="mb-back-btn" onclick="goBackToLanding()">← Landing Page Par Wapas Jao</button>
-  <div class="mb-hint">Minimum screen width 1024px chahiye</div>
-</div>
 
 <!-- ███████ LANDING ███████ -->
 <div id="landing">
@@ -1278,7 +1168,7 @@ footer{background:var(--ink);padding:64px 5% 32px;}
       <div id="page-dashboard" class="page active">
         <div class="page-header">
           <div class="page-title">Dashboard 📊</div>
-          <div class="page-sub">Aaj ka overview — April 7, 2026</div>
+          <div class="page-sub">Aaj ka overview — April 6, 2026</div>
         </div>
         <div class="metrics-grid">
           <div class="metric-card orange"><div class="metric-top"><div class="metric-ico">💰</div><div class="metric-change up">↑ 18.4%</div></div><div class="metric-val">₹4,28,500</div><div class="metric-lbl">This Month GMV</div><div class="metric-sub">↑ ₹65K vs last month</div></div>
@@ -1367,10 +1257,10 @@ footer{background:var(--ink);padding:64px 5% 32px;}
           <table class="data-table">
             <thead><tr><th>#ID</th><th>Customer</th><th>Maid</th><th>Service</th><th>Date & Time</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody>
-              <tr><td style="color:var(--muted)">#1847</td><td><div class="av-cell"><div class="tbl-av or">N</div><div><div class="av-name">Neha Agarwal</div><div class="av-sub">Tatibandh</div></div></div></td><td><div class="av-cell"><div class="tbl-av gr">S</div><div class="av-name">Savita Devi</div></div></td><td>Cleaning 2hr</td><td>Apr 7 · 10:00AM</td><td style="color:var(--g);font-weight:700">₹298</td><td><span class="badge badge-green">Completed</span></td><td><div class="act-btns"><div class="act-btn" onclick="showToast('Details opened','👁')">👁</div><div class="act-btn" onclick="showToast('Reassigned!','🔄')">🔄</div></div></td></tr>
-              <tr><td style="color:var(--muted)">#1846</td><td><div class="av-cell"><div class="tbl-av bl">R</div><div><div class="av-name">Rahul Gupta</div><div class="av-sub">Civil Lines</div></div></div></td><td><div class="av-cell"><div class="tbl-av bl">P</div><div class="av-name">Priya Yadav</div></div></td><td>Cooking 1hr</td><td>Apr 7 · 9:30AM</td><td style="color:#B45309;font-weight:700">₹199</td><td><span class="badge badge-amber">Ongoing</span></td><td><div class="act-btns"><div class="act-btn" onclick="showToast('Tracking live','📍')">📍</div><div class="act-btn danger" onclick="showToast('Cancelled','❌')">✕</div></div></td></tr>
-              <tr><td style="color:var(--muted)">#1845</td><td><div class="av-cell"><div class="tbl-av pu">A</div><div><div class="av-name">Anjali Tiwari</div><div class="av-sub">Shankar Nagar</div></div></div></td><td><div class="av-cell"><div class="tbl-av or">R</div><div class="av-name">Rekha Singh</div></div></td><td>Bartan 1hr</td><td>Apr 7 · 9:00AM</td><td style="color:var(--g);font-weight:700">₹149</td><td><span class="badge badge-green">Completed</span></td><td><div class="act-btns"><div class="act-btn" onclick="showToast('Details opened','👁')">👁</div></div></td></tr>
-              <tr><td style="color:var(--muted)">#1844</td><td><div class="av-cell"><div class="tbl-av gr">V</div><div><div class="av-name">Vijay Sharma</div><div class="av-sub">Pandri</div></div></div></td><td><span class="badge badge-red">Unassigned</span></td><td>Cleaning 1hr</td><td>Apr 7 · 8:30AM</td><td style="color:var(--muted);font-weight:700">₹149</td><td><span class="badge badge-red">No-Show</span></td><td><div class="act-btns"><div class="act-btn" onclick="showToast('Backup assigned!','🔄')">🔄</div><div class="act-btn" onclick="showToast('Refund initiated','💸')">💸</div></div></td></tr>
+              <tr><td style="color:var(--muted)">#1847</td><td><div class="av-cell"><div class="tbl-av or">N</div><div><div class="av-name">Neha Agarwal</div><div class="av-sub">Tatibandh</div></div></div></td><td><div class="av-cell"><div class="tbl-av gr">S</div><div class="av-name">Savita Devi</div></div></td><td>Cleaning 2hr</td><td>Apr 6 · 10:00AM</td><td style="color:var(--g);font-weight:700">₹298</td><td><span class="badge badge-green">Completed</span></td><td><div class="act-btns"><div class="act-btn" onclick="showToast('Details opened','👁')">👁</div><div class="act-btn" onclick="showToast('Reassigned!','🔄')">🔄</div></div></td></tr>
+              <tr><td style="color:var(--muted)">#1846</td><td><div class="av-cell"><div class="tbl-av bl">R</div><div><div class="av-name">Rahul Gupta</div><div class="av-sub">Civil Lines</div></div></div></td><td><div class="av-cell"><div class="tbl-av bl">P</div><div class="av-name">Priya Yadav</div></div></td><td>Cooking 1hr</td><td>Apr 6 · 9:30AM</td><td style="color:#B45309;font-weight:700">₹199</td><td><span class="badge badge-amber">Ongoing</span></td><td><div class="act-btns"><div class="act-btn" onclick="showToast('Tracking live','📍')">📍</div><div class="act-btn danger" onclick="showToast('Cancelled','❌')">✕</div></div></td></tr>
+              <tr><td style="color:var(--muted)">#1845</td><td><div class="av-cell"><div class="tbl-av pu">A</div><div><div class="av-name">Anjali Tiwari</div><div class="av-sub">Shankar Nagar</div></div></div></td><td><div class="av-cell"><div class="tbl-av or">R</div><div class="av-name">Rekha Singh</div></div></td><td>Bartan 1hr</td><td>Apr 6 · 9:00AM</td><td style="color:var(--g);font-weight:700">₹149</td><td><span class="badge badge-green">Completed</span></td><td><div class="act-btns"><div class="act-btn" onclick="showToast('Details opened','👁')">👁</div></div></td></tr>
+              <tr><td style="color:var(--muted)">#1844</td><td><div class="av-cell"><div class="tbl-av gr">V</div><div><div class="av-name">Vijay Sharma</div><div class="av-sub">Pandri</div></div></div></td><td><span class="badge badge-red">Unassigned</span></td><td>Cleaning 1hr</td><td>Apr 6 · 8:30AM</td><td style="color:var(--muted);font-weight:700">₹149</td><td><span class="badge badge-red">No-Show</span></td><td><div class="act-btns"><div class="act-btn" onclick="showToast('Backup assigned!','🔄')">🔄</div><div class="act-btn" onclick="showToast('Refund initiated','💸')">💸</div></div></td></tr>
             </tbody>
           </table>
           </div>
@@ -1607,54 +1497,6 @@ footer{background:var(--ink);padding:64px 5% 32px;}
 </div>
 
 <script>
-// ─── MOBILE DETECTION ───
-// Check karo ki device mobile hai ya nahi
-// Mobile = screen width < 1024px AND touch device
-function isMobileDevice(){
-  const w = window.innerWidth || document.documentElement.clientWidth;
-  const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-  // Small phone ya tablet (under 1024px)
-  return w < 1024;
-}
-
-function showAuth(){
-  if(isMobileDevice()){
-    // Mobile hai — block screen dikhao
-    document.getElementById('landing').style.display='none';
-    document.getElementById('mobile-block').style.display='flex';
-    return;
-  }
-  // Desktop/laptop hai — normal auth dikhao
-  document.getElementById('landing').style.display='none';
-  const a=document.getElementById('auth-wrap');
-  a.style.display='flex';
-}
-
-function goBackToLanding(){
-  document.getElementById('mobile-block').style.display='none';
-  document.getElementById('landing').style.display='block';
-  document.getElementById('auth-wrap').style.display='none';
-}
-
-// Resize par bhi check karo
-window.addEventListener('resize', function(){
-  const mb = document.getElementById('mobile-block');
-  const auth = document.getElementById('auth-wrap');
-  if(mb.style.display === 'flex'){
-    if(!isMobileDevice()){
-      // Screen bada ho gaya — auth dikhao
-      mb.style.display='none';
-      auth.style.display='flex';
-    }
-  } else if(auth.style.display === 'flex'){
-    if(isMobileDevice()){
-      // Chhota ho gaya — block dikhao
-      auth.style.display='none';
-      mb.style.display='flex';
-    }
-  }
-});
-
 // ─── LANDING INTERACTIONS ───
 function toggleFaq(btn){
   const item=btn.parentElement;
@@ -1669,6 +1511,13 @@ const io=new IntersectionObserver((entries)=>{
   });
 },{threshold:.1});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// ─── SHOW AUTH ───
+function showAuth(){
+  document.getElementById('landing').style.display='none';
+  const a=document.getElementById('auth-wrap');
+  a.style.display='flex';
+}
 
 // ─── AUTH ───
 function switchAuth(tab){
